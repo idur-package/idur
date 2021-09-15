@@ -84,7 +84,7 @@ Use:
 			""")
 			exit()
 		if sys.argv[1] == "--version":
-			print("idk")
+			print("v0.0.1")
 			exit()
 	else:
 		print("""
