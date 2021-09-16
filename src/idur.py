@@ -145,7 +145,7 @@ def d_install(packagename):
 			os.system("apt install -y " + package.Depends[i])
 	if hasattr(package, 'idurDepends'):
 		for i in range(len(package.idurDepends)):
-			os.system("idur in " + package.Depends[i])
+			os.system("idur in " + package.idurDepends[i])
 	
 	if Arch64():
 		if package.Arch == "all":
