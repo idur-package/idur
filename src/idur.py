@@ -14,7 +14,6 @@ def main():
 		for i in range(Narg):
 			if sys.argv[i] == "in":
 				is_root()
-				print("install")
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
@@ -23,7 +22,6 @@ def main():
 						y = i
 						
 			if sys.argv[i] == "search":
-				print("search")
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
@@ -32,7 +30,6 @@ def main():
 						y = i
 						
 			if sys.argv[i] == "show":
-				print("show details")
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
@@ -41,7 +38,6 @@ def main():
 						y = i
 			elif sys.argv[i] == "rm":
 				is_root()
-				print("remove")
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
@@ -50,7 +46,6 @@ def main():
 						y = i
 			elif sys.argv[i] == "up":
 				is_root()
-				print("update")
 				d_updater()
 				if Narg < 3:
 					d_update_all()
@@ -63,11 +58,9 @@ def main():
 							y = i
 			elif sys.argv[i] == "upr":
 				is_root()
-				print("update repos")
 				d_updater()
 			elif sys.argv[i] == "addr":
 				is_root()
-				print("add repo")
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
@@ -76,7 +69,6 @@ def main():
 						y = i
 			elif sys.argv[i] == "rmr":
 				is_root()
-				print("remove repo")
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
@@ -103,6 +95,7 @@ Use:
     in <package>      Install package
     rm <package>      Remove package
     show <package>    Show details of package
+    search <name>     Search packages
     up <package>      Update package
     up                Update all package
     upr               Update just repos
