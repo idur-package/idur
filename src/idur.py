@@ -22,6 +22,9 @@ def main():
 						y = i
 						
 			if sys.argv[i] == "search" or sys.argv[i] == "se":
+				
+				if Narg < 3:
+					d_search("", sa=False)
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
@@ -315,8 +318,11 @@ def _read_desc(pathd):
 	prithis= package.Description.replace('\n', ' ')
 	
 	print("- " + prithis[0:50] + "...")
-def d_search(packagename):
-	path='/etc/idur/repos/*/*' + packagename + '*.py'
+def d_search(packagename, sa=False):
+	if sa:
+		path="/etc/idur/repos/*/*"
+	else:
+		path='/etc/idur/repos/*/*' + packagename + '*.py'
 	result=glob.glob(path, recursive=True)
 	for i in range(len(result)):
 		pit=os.path.basename(result[i])
