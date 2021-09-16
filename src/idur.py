@@ -179,9 +179,11 @@ def d_showdetails(packagename):
 		exit()
 	
 	print("Name: " + package.Name)
-	print("Version: " + package.Version)
+	print("Version: " + str(package.Version))
 	print("Maintainer: " + package.Maintainer)
 	print("Contact: " + package.Contact)
+	if package.License != None:
+		print("License: " + package.License)
 	
 	print("Depends: ")
 	for i in range(len(package.Depends)):
@@ -191,6 +193,9 @@ def d_showdetails(packagename):
 		print(" - x86_64")
 	if package.Arch == "i386" or package.Arch == "all" or package.Arch == "both":
 		print(" - i386")
+	
+	print("Description: ")
+	print(package.Description)
 	
 	
 		
