@@ -36,7 +36,7 @@ def main():
 							d_showdetails(sys.argv[y])
 					else:
 						y = i
-			elif sys.argv[i] == "rm":
+			elif sys.argv[i] == "remove":
 				is_root()
 				for y in range(Narg):
 					if y > i:
@@ -44,7 +44,7 @@ def main():
 							d_remove(sys.argv[y])
 					else:
 						y = i
-			elif sys.argv[i] == "up":
+			elif sys.argv[i] == "update":
 				is_root()
 				d_updater()
 				if Narg < 3:
@@ -56,10 +56,10 @@ def main():
 								d_update(sys.argv[y])
 						else:
 							y = i
-			elif sys.argv[i] == "upr":
+			elif sys.argv[i] == "update-repos":
 				is_root()
 				d_updater()
-			elif sys.argv[i] == "addr":
+			elif sys.argv[i] == "add-repo":
 				is_root()
 				for y in range(Narg):
 					if y > i:
@@ -67,7 +67,7 @@ def main():
 							d_addr(sys.argv[y])
 					else:
 						y = i
-			elif sys.argv[i] == "rmr":
+			elif sys.argv[i] == "remove-repo":
 				is_root()
 				for y in range(Narg):
 					if y > i:
@@ -75,7 +75,7 @@ def main():
 							d_rmr(sys.argv[y])
 					else:
 						y = i
-			elif sys.argv[i] == "lr":
+			elif sys.argv[i] == "list-repos":
 				d_lr()
 			elif sys.argv[i] == "l":
 				d_list_all()
@@ -92,16 +92,17 @@ def help():
 	helpvar="""
 idur <command> <package>
 Use:
-    install <package>    Install package
-    rm <package>         Remove package
-    show <package>       Show details of package
-    search <name>        Search packages
-    up <package>         Update package
-    up                   Update all package
-    upr                  Update just repos
-    addr <repo link>     Add a new repo
-    rmr <repo name>      Remove a repo
-    lr                   list all repo
+    install        <package>    Install package
+    remove         <package>    Remove package
+    show           <package>    Show details of package
+    search         <name>       Search packages
+    l                           list all packages
+    update         <package>    Update package
+    update                      Update all package
+    update-repos                Update just repos
+    add-repo       <repo link>  Add a new repo
+    remove-repo    <repo name>  Remove a repo
+    list-repos                  list all repo
 			"""
 	if len(sys.argv) > 1:
 		if sys.argv[1] == "--help":
