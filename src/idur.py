@@ -130,10 +130,18 @@ def d_install(packagename):
 	result=glob.glob(path, recursive=True)
 	sys.path.insert(1, os.path.dirname(result[0]))
 	
-	
 	package = __import__(packagename)
 	if packagename == "standard":
 		exit()
+		
+	if hasattr(package, 'Conflict'):
+		for i in range(len(package.Conflict)):
+			if package.Conflict[i] in str(subprocess.check_output(["apt", "list", "--installed", package.Conflict[i]])):
+				print(package.Conflict[i] + " is in conflict with " + packagename)
+				exit()
+			elif package.Conflict[i] in str(subprocess.check_output(["idur", "l"])):
+				print(package.Conflict[i] + " is in conflict with " + packagename)
+				exit()
 	
 	os.system("cp " + path + " /etc/idur/apps/" + packagename + "-v.py")
 	
