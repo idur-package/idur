@@ -61,12 +61,10 @@ def main():
 				d_updater()
 			elif sys.argv[i] == "add-repo" or sys.argv[i] == "addr":
 				is_root()
-				for y in range(Narg):
-					if y > i:
-						if "--" not in sys.argv[y]:
-							d_addr(sys.argv[y])
-					else:
-						y = i
+				if len(sys.argv) > i+2:
+					d_addr(sys.argv[i+1], sys.argv[i+2])
+				else:
+					print("add-repo <repo-name> <repo-link>")
 			elif sys.argv[i] == "remove-repo" or sys.argv[i] == "rmr":
 				is_root()
 				for y in range(Narg):
@@ -92,17 +90,17 @@ def help():
 	helpvar="""
 idur <command> <package>
 Use:
-    install        <package>    Install package
-    remove         <package>    Remove package
-    show           <package>    Show details of package
-    search         <name>       Search packages
-    list                        list all packages
-    update         <package>    Update package
-    update                      Update all package
-    update-repos                Update just repos
-    add-repo       <repo link>  Add a new repo
-    remove-repo    <repo name>  Remove a repo
-    list-repos                  list all repo
+    install        <package>                Install package
+    remove         <package>                Remove package
+    show           <package>                Show details of package
+    search         <name>                   Search packages
+    list                                    list all packages
+    update         <package>                Update package
+    update                                  Update all package
+    update-repos                            Update just repos
+    add-repo       <repo-name> <repo-link>  Add a new repo
+    remove-repo    <repo name>              Remove a repo
+    list-repos                              list all repo
 			"""
 	if len(sys.argv) > 1:
 		if sys.argv[1] == "--help" or sys.argv[1] == "-h":
@@ -284,11 +282,11 @@ def d_lr():
 			print(npath)
 	
 
-def d_addr(link):
-	os.system("""
-	cd /etc/idur/repos/
-	git clone """ + link + """
-	""")
+def d_addr(name, link):
+	if os.path.exists("/etc/idur/repos/" + name) == False:
+		os.system("""
+		cd /etc/idur/repos/
+		git clone """ + link + " " + name)
 def d_updater():
 	result=glob.glob('/etc/idur/repos/*/standard.py', recursive=True)
 	for i in range(len(result)):
