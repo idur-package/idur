@@ -189,7 +189,7 @@ def d_showdetails(packagename):
 	print("Architecture:")
 	if package.Arch == "x86_64" or package.Arch == "all" or package.Arch == "both":
 		print(" - x86_64")
-	elif package.Arch == "i386" or package.Arch == "all" or package.Arch == "both":
+	if package.Arch == "i386" or package.Arch == "all" or package.Arch == "both":
 		print(" - i386")
 	
 	
