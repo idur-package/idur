@@ -105,11 +105,11 @@ Use:
     list-repos                  list all repo
 			"""
 	if len(sys.argv) > 1:
-		if sys.argv[1] == "--help":
+		if sys.argv[1] == "--help" or sys.argv[1] == "-h":
 			print(helpvar)
 			exit()
-		if sys.argv[1] == "--version":
-			print("v0.0.3")
+		if sys.argv[1] == "--version" or sys.argv[1] == "-v":
+			print("v0.0.4")
 			exit()
 	else:
 		print(helpvar)
