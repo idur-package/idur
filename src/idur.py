@@ -132,6 +132,9 @@ def start():
 def d_install(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
+	if len(result) == 0:
+		print("Package not found")
+		exit()
 	sys.path.insert(1, os.path.dirname(result[0]))
 	
 	package = __import__(packagename)
@@ -178,6 +181,9 @@ def d_install(packagename):
 def d_showdetails(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
+	if len(result) == 0:
+		print("Package not found")
+		exit()
 	sys.path.insert(1, os.path.dirname(result[0]))
 	
 	
@@ -217,6 +223,10 @@ def d_showdetails(packagename):
 def d_remove(packagename):
 	sys.path.insert(1, "/etc/idur/apps")
 	
+	if os.path.exists("/etc/idur/apps/" + packagename + "-v.py") == False:
+		print("you don't have installed " + packagename)
+		exit()
+	
 	package = __import__(packagename + "-v")
 	if packagename == "standard":
 		exit()
@@ -227,7 +237,9 @@ def d_remove(packagename):
 def d_update(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
-	print(result[0])
+	if len(result) == 0:
+		print("Package not found")
+		exit()
 	sys.path.insert(1, "/etc/idur/apps")
 	
 	package = __import__(packagename + "-v")
@@ -269,6 +281,8 @@ def d_rmr(name):
 		size=len(path)
 		path = path[:size - 11]
 		os.system("rm -vrf " + path)
+	else:
+		print("you don't have this repository")
 	
 def d_lr():
 	path='/etc/idur/repos/*/standard.py'
