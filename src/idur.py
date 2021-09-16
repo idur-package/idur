@@ -185,7 +185,7 @@ def d_showdetails(packagename):
 	
 	print("Depends: ")
 	for i in range(len(package.Depends)):
-		print(package.Depends[i])
+		print(" - " + package.Depends[i])
 	print("Architecture:")
 	if package.Arch == "x86_64" or package.Arch == "all" or package.Arch == "both":
 		print(" - x86_64")
