@@ -86,38 +86,28 @@ def Arch64():
 	
 
 def help():
+	helpvar="""
+idur <command> <package>
+Use:
+    in <package>      Install package
+    rm <package>      Remove package
+    show <package>    Show details of package
+    up <package>      Update package
+    up                Update all package
+    upr               Update just repos
+    addr <repo link>  Add a new repo
+    rmr <repo name>   Remove a repo
+    lr                list all repo
+			"""
 	if len(sys.argv) > 1:
 		if sys.argv[1] == "--help":
-			print("""
-idur <command> <package>
-Use:
-    in <package>      Install package
-    rm <package>      Remove package
-    up <package>      Update package
-    up                Update all package
-    upr               Update just repos
-    addr <repo link>  Add a new repo
-    rmr <repo name>   Remove a repo
-    lr                list all repo
-			""")
+			print(helpvar)
 			exit()
 		if sys.argv[1] == "--version":
-			print("v0.0.1")
+			print("v0.0.2")
 			exit()
 	else:
-		print("""
-idur <command> <package>
-Use:
-    in <package>      Install package
-    rm <package>      Remove package
-    up <package>      Update package
-    up                Update all package
-    l                 list all apps
-    upr               Update just repos
-    addr <repo link>  Add a new repo
-    rmr <repo name>   Remove a repo
-    lr                list all repo
-		""")
+		print(helpvar)
 def detect_root():
 	if os.name == "posix":
 		if "root" not in str(subprocess.check_output(["whoami"])):
