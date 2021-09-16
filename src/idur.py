@@ -6,6 +6,7 @@ import glob
 import subprocess
 
 def main():
+	arch = Arch64()
 	help()
 	start()
 	Narg=len(sys.argv) #number of args
@@ -18,6 +19,15 @@ def main():
 						if "--" not in sys.argv[y]:
 							print(sys.argv[y])
 							d_install(sys.argv[y])
+					else:
+						y = i
+			if sys.argv[i] == "show":
+				print("show details")
+				for y in range(Narg):
+					if y > i:
+						if "--" not in sys.argv[y]:
+							print(sys.argv[y])
+							d_showdetails(sys.argv[y])
 					else:
 						y = i
 			elif sys.argv[i] == "rm":
@@ -67,6 +77,14 @@ def main():
 			elif sys.argv[i] == "l":
 				d_list_all()
 	exit()
+
+def Arch64():
+	if "x86_64" not in str(subprocess.check_output(["uname", "-m"])):
+		return True
+	else:
+		return False
+	
+
 def help():
 	if len(sys.argv) > 1:
 		if sys.argv[1] == "--help":
@@ -132,7 +150,50 @@ def d_install(packagename):
 	for i in range(len(package.Depends)):
 		os.system("apt install -y " + package.Depends[i])
 	
-	os.system(package.Install)
+	if Arch64():
+		if package.Arch == "all":
+			os.system(package.Install)
+		elif package.Arch == "x86_64":
+			os.system(package.Install64)
+		elif package.Arch == "i386":
+			print("just i386")
+		elif package.Arch == "both":
+			os.system(package.Install64)
+	else:
+		if package.Arch == "all":
+			os.system(package.Install)
+		elif package.Arch == "x86_64":
+			print("just x86_64")
+		elif package.Arch == "i386":
+			os.system(package.Install32)
+		elif package.Arch == "both":
+			os.system(package.Install32)
+def d_showdetails(packagename):
+	path='/etc/idur/repos/*/' + packagename + '.py'
+	result=glob.glob(path, recursive=True)
+	sys.path.insert(1, os.path.dirname(result[0]))
+	
+	
+	package = __import__(packagename)
+	if packagename == "standard":
+		exit()
+	
+	print("Name: " + package.Name)
+	print("Version: " + package.Version)
+	print("Maintainer: " + package.Maintainer)
+	print("Contact: " + package.Contact)
+	
+	print("Depends: ")
+	for i in range(len(package.Depends)):
+		print(package.Depends[i])
+	print("Architecture:")
+	if package.Arch == "x86_64" or package.Arch == "all" or package.Arch == "both":
+		print(" - x86_64")
+	elif package.Arch == "i386" or package.Arch == "all" or package.Arch == "both":
+		print(" - i386")
+	
+	
+		
 
 def d_remove(packagename):
 	sys.path.insert(1, "/etc/idur/apps")
