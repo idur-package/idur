@@ -27,7 +27,7 @@ def main():
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
-							d_install(sys.argv[y])
+							d_search(sys.argv[y])
 					else:
 						y = i
 						
@@ -293,6 +293,53 @@ def d_updater():
 	result=glob.glob('/etc/idur/repos/*/standard.py', recursive=True)
 	for i in range(len(result)):
 		os.system("cd " + os.path.dirname(result[i]) + "&& git pull")
+	
+def _read_desc(pathd):
+	sys.path.insert(1, os.path.dirname(pathd))
+	packagename = os.path.basename(pathd)
+	packagename = packagename[:len(packagename) - 3]
+	package = __import__(packagename)
+	
+	prithis= package.Description.replace('\n', ' ')
+	
+	print("- " + prithis[0:50] + "...")
+def d_search(packagename):
+	path='/etc/idur/repos/*/*' + packagename + '*.py'
+	result=glob.glob(path, recursive=True)
+	#sys.path.insert(1, os.path.dirname(result[0]))
+	for i in range(len(result)):
+		pit=os.path.basename(result[i])
+		pit = pit[:len(pit) - 3]
+		if pit != "standard":
+			print(pit)
+			_read_desc(result[i])
+	
+	
+	#package = __import__(packagename)
+	#if packagename == "standard":
+	#	exit()
+	
+	#print("Name: " + package.Name)
+	#if hasattr(package, 'Version'):
+	#	print("Version: " + str(package.Version))
+	#print("Maintainer: " + package.Maintainer)
+	#if hasattr(package, 'Contact'):
+	#	print("Contact: " + package.Contact)
+	#if hasattr(package, 'License'):
+	#	print("License: " + package.License)
+	#
+	#print("Depends: ")
+	#for i in range(len(package.Depends)):
+	#	print(" - " + package.Depends[i])
+	#print("Architecture:")
+	#if package.Arch == "x86_64" or package.Arch == "all" or package.Arch == "both":
+#		print(" - x86_64")
+#	if package.Arch == "i386" or package.Arch == "all" or package.Arch == "both":
+#		print(" - i386")
+#	
+#	print("Description: ")
+#	print(package.Description)
+	
 	
 
 
