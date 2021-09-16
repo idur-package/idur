@@ -17,7 +17,6 @@ def main():
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
-							print(sys.argv[y])
 							d_install(sys.argv[y])
 					else:
 						y = i
@@ -26,7 +25,6 @@ def main():
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
-							print(sys.argv[y])
 							d_showdetails(sys.argv[y])
 					else:
 						y = i
@@ -35,7 +33,6 @@ def main():
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
-							print(sys.argv[y])
 							d_remove(sys.argv[y])
 					else:
 						y = i
@@ -48,7 +45,6 @@ def main():
 					for y in range(Narg):
 						if y > i:
 							if "--" not in sys.argv[y]:
-								print(sys.argv[y])
 								d_update(sys.argv[y])
 						else:
 							y = i
@@ -60,7 +56,6 @@ def main():
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
-							print(sys.argv[y])
 							d_addr(sys.argv[y])
 					else:
 						y = i
@@ -145,8 +140,12 @@ def d_install(packagename):
 	
 	os.system("cp " + path + " /etc/idur/apps/" + packagename + "-v.py")
 	
-	for i in range(len(package.Depends)):
-		os.system("apt install -y " + package.Depends[i])
+	if hasattr(package, 'Depends'):
+		for i in range(len(package.Depends)):
+			os.system("apt install -y " + package.Depends[i])
+	if hasattr(package, 'idurDepends'):
+		for i in range(len(package.idurDepends)):
+			os.system("idur in " + package.Depends[i])
 	
 	if Arch64():
 		if package.Arch == "all":
@@ -177,7 +176,8 @@ def d_showdetails(packagename):
 		exit()
 	
 	print("Name: " + package.Name)
-	print("Version: " + str(package.Version))
+	if hasattr(package, 'Version'):
+		print("Version: " + str(package.Version))
 	print("Maintainer: " + package.Maintainer)
 	if hasattr(package, 'Contact'):
 		print("Contact: " + package.Contact)
