@@ -13,6 +13,7 @@ def main():
 	if Narg > 1:
 		for i in range(Narg):
 			if sys.argv[i] == "in":
+				is_root()
 				print("install")
 				for y in range(Narg):
 					if y > i:
@@ -20,6 +21,16 @@ def main():
 							d_install(sys.argv[y])
 					else:
 						y = i
+						
+			if sys.argv[i] == "search":
+				print("search")
+				for y in range(Narg):
+					if y > i:
+						if "--" not in sys.argv[y]:
+							d_install(sys.argv[y])
+					else:
+						y = i
+						
 			if sys.argv[i] == "show":
 				print("show details")
 				for y in range(Narg):
@@ -29,6 +40,7 @@ def main():
 					else:
 						y = i
 			elif sys.argv[i] == "rm":
+				is_root()
 				print("remove")
 				for y in range(Narg):
 					if y > i:
@@ -37,6 +49,7 @@ def main():
 					else:
 						y = i
 			elif sys.argv[i] == "up":
+				is_root()
 				print("update")
 				d_updater()
 				if Narg < 3:
@@ -49,9 +62,11 @@ def main():
 						else:
 							y = i
 			elif sys.argv[i] == "upr":
+				is_root()
 				print("update repos")
 				d_updater()
 			elif sys.argv[i] == "addr":
+				is_root()
 				print("add repo")
 				for y in range(Narg):
 					if y > i:
@@ -60,6 +75,7 @@ def main():
 					else:
 						y = i
 			elif sys.argv[i] == "rmr":
+				is_root()
 				print("remove repo")
 				for y in range(Narg):
 					if y > i:
@@ -111,10 +127,11 @@ def detect_root():
 			return True
 	else:
 		return True
-def start():
+def is_root():
 	if detect_root() == False:
 		print("need root")
 		exit()
+def start():
 	os.system("mkdir -p /etc/idur/")
 	os.system("mkdir -p /etc/idur/repos")
 	os.system("mkdir -p /etc/idur/apps")
