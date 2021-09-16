@@ -145,9 +145,10 @@ def d_install(packagename):
 			if package.Conflict[i] in str(subprocess.check_output(["apt", "list", "--installed", package.Conflict[i]])):
 				print(package.Conflict[i] + " is in conflict with " + packagename)
 				exit()
-			elif package.Conflict[i] in str(subprocess.check_output(["idur", "l"])):
-				print(package.Conflict[i] + " is in conflict with " + packagename)
-				exit()
+			elif os.path.exists("/usr/bin/idur"):
+				if package.Conflict[i] in str(subprocess.check_output(["idur", "l"])):
+					print(package.Conflict[i] + " is in conflict with " + packagename)
+					exit()
 	
 	os.system("cp " + path + " /etc/idur/apps/" + packagename + "-v.py")
 	
