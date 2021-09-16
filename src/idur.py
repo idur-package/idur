@@ -97,7 +97,7 @@ Use:
     remove         <package>                Remove package
     show           <package>                Show details of package
     search         <name>                   Search packages
-    list                                    list all packages
+    list                                    list all installed packages
     update         <package>                Update package
     update                                  Update all package
     update-repos                            Update just repos
