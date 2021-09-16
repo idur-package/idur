@@ -196,9 +196,14 @@ def d_showdetails(packagename):
 	if hasattr(package, 'License'):
 		print("License: " + package.License)
 	
-	print("Depends: ")
-	for i in range(len(package.Depends)):
-		print(" - " + package.Depends[i])
+	if hasattr(package, 'Depends'):
+		print("Depends: ")
+		for i in range(len(package.Depends)):
+			print(" - " + package.Depends[i])
+	if hasattr(package, 'idurDepends'):
+		print("idurDepends: ")
+		for i in range(len(package.idurDepends)):
+			print(" - " + package.idurDepends[i])
 	print("Architecture:")
 	if package.Arch == "x86_64" or package.Arch == "all" or package.Arch == "both":
 		print(" - x86_64")
