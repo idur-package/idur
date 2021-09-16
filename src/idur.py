@@ -110,7 +110,7 @@ Use:
 			print(helpvar)
 			exit()
 		if sys.argv[1] == "--version" or sys.argv[1] == "-v":
-			print("v0.0.7")
+			print("v0.0.8")
 			exit()
 	else:
 		print(helpvar)
