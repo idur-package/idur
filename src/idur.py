@@ -181,8 +181,9 @@ def d_showdetails(packagename):
 	print("Name: " + package.Name)
 	print("Version: " + str(package.Version))
 	print("Maintainer: " + package.Maintainer)
-	print("Contact: " + package.Contact)
-	if package.License != None:
+	if hasattr(package, 'Contact'):
+		print("Contact: " + package.Contact)
+	if hasattr(package, 'License'):
 		print("License: " + package.License)
 	
 	print("Depends: ")
