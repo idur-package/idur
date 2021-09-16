@@ -12,7 +12,7 @@ def main():
 	Narg=len(sys.argv) #number of args
 	if Narg > 1:
 		for i in range(Narg):
-			if sys.argv[i] == "install":
+			if sys.argv[i] == "install" or sys.argv[i] == "in":
 				is_root()
 				for y in range(Narg):
 					if y > i:
@@ -21,7 +21,7 @@ def main():
 					else:
 						y = i
 						
-			if sys.argv[i] == "search":
+			if sys.argv[i] == "search" or sys.argv[i] == "se":
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
@@ -29,14 +29,14 @@ def main():
 					else:
 						y = i
 						
-			if sys.argv[i] == "show":
+			if sys.argv[i] == "show" or sys.argv[i] == "sh":
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
 							d_showdetails(sys.argv[y])
 					else:
 						y = i
-			elif sys.argv[i] == "remove":
+			elif sys.argv[i] == "remove" or sys.argv[i] == "rm":
 				is_root()
 				for y in range(Narg):
 					if y > i:
@@ -44,7 +44,7 @@ def main():
 							d_remove(sys.argv[y])
 					else:
 						y = i
-			elif sys.argv[i] == "update":
+			elif sys.argv[i] == "update" or sys.argv[i] == "up":
 				is_root()
 				d_updater()
 				if Narg < 3:
@@ -56,10 +56,10 @@ def main():
 								d_update(sys.argv[y])
 						else:
 							y = i
-			elif sys.argv[i] == "update-repos":
+			elif sys.argv[i] == "update-repos" or sys.argv[i] == "upr":
 				is_root()
 				d_updater()
-			elif sys.argv[i] == "add-repo":
+			elif sys.argv[i] == "add-repo" or sys.argv[i] == "addr":
 				is_root()
 				for y in range(Narg):
 					if y > i:
@@ -67,7 +67,7 @@ def main():
 							d_addr(sys.argv[y])
 					else:
 						y = i
-			elif sys.argv[i] == "remove-repo":
+			elif sys.argv[i] == "remove-repo" or sys.argv[i] == "rmr":
 				is_root()
 				for y in range(Narg):
 					if y > i:
@@ -75,9 +75,9 @@ def main():
 							d_rmr(sys.argv[y])
 					else:
 						y = i
-			elif sys.argv[i] == "list-repos":
+			elif sys.argv[i] == "list-repos" or sys.argv[i] == "lr":
 				d_lr()
-			elif sys.argv[i] == "l":
+			elif sys.argv[i] == "l" or sys.argv[i] == "list":
 				d_list_all()
 	exit()
 
@@ -96,7 +96,7 @@ Use:
     remove         <package>    Remove package
     show           <package>    Show details of package
     search         <name>       Search packages
-    l                           list all packages
+    list                        list all packages
     update         <package>    Update package
     update                      Update all package
     update-repos                Update just repos
