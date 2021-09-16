@@ -12,7 +12,7 @@ def main():
 	Narg=len(sys.argv) #number of args
 	if Narg > 1:
 		for i in range(Narg):
-			if sys.argv[i] == "in":
+			if sys.argv[i] == "install":
 				is_root()
 				for y in range(Narg):
 					if y > i:
@@ -92,16 +92,16 @@ def help():
 	helpvar="""
 idur <command> <package>
 Use:
-    in <package>      Install package
-    rm <package>      Remove package
-    show <package>    Show details of package
-    search <name>     Search packages
-    up <package>      Update package
-    up                Update all package
-    upr               Update just repos
-    addr <repo link>  Add a new repo
-    rmr <repo name>   Remove a repo
-    lr                list all repo
+    install <package>    Install package
+    rm <package>         Remove package
+    show <package>       Show details of package
+    search <name>        Search packages
+    up <package>         Update package
+    up                   Update all package
+    upr                  Update just repos
+    addr <repo link>     Add a new repo
+    rmr <repo name>      Remove a repo
+    lr                   list all repo
 			"""
 	if len(sys.argv) > 1:
 		if sys.argv[1] == "--help":
@@ -155,7 +155,7 @@ def d_install(packagename):
 			os.system("apt install -y " + package.Depends[i])
 	if hasattr(package, 'idurDepends'):
 		for i in range(len(package.idurDepends)):
-			os.system("idur in " + package.idurDepends[i])
+			os.system("idur install " + package.idurDepends[i])
 	
 	if Arch64():
 		if package.Arch == "all":
@@ -299,40 +299,12 @@ def _read_desc(pathd):
 def d_search(packagename):
 	path='/etc/idur/repos/*/*' + packagename + '*.py'
 	result=glob.glob(path, recursive=True)
-	#sys.path.insert(1, os.path.dirname(result[0]))
 	for i in range(len(result)):
 		pit=os.path.basename(result[i])
 		pit = pit[:len(pit) - 3]
 		if pit != "standard":
 			print(pit)
 			_read_desc(result[i])
-	
-	
-	#package = __import__(packagename)
-	#if packagename == "standard":
-	#	exit()
-	
-	#print("Name: " + package.Name)
-	#if hasattr(package, 'Version'):
-	#	print("Version: " + str(package.Version))
-	#print("Maintainer: " + package.Maintainer)
-	#if hasattr(package, 'Contact'):
-	#	print("Contact: " + package.Contact)
-	#if hasattr(package, 'License'):
-	#	print("License: " + package.License)
-	#
-	#print("Depends: ")
-	#for i in range(len(package.Depends)):
-	#	print(" - " + package.Depends[i])
-	#print("Architecture:")
-	#if package.Arch == "x86_64" or package.Arch == "all" or package.Arch == "both":
-#		print(" - x86_64")
-#	if package.Arch == "i386" or package.Arch == "all" or package.Arch == "both":
-#		print(" - i386")
-#	
-#	print("Description: ")
-#	print(package.Description)
-	
 	
 
 
