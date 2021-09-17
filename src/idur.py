@@ -4,6 +4,7 @@ import sys
 from sys import exit
 import glob
 import subprocess
+import requests
 
 def main():
 	arch = Arch64()
@@ -17,6 +18,7 @@ def main():
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
+							tryinternet()
 							d_install(sys.argv[y])
 					else:
 						y = i
@@ -27,6 +29,7 @@ def main():
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
+							tryinternet()
 							d_reinstall(sys.argv[y])
 					else:
 						y = i
@@ -59,6 +62,7 @@ def main():
 						y = i
 			elif sys.argv[i] == "update" or sys.argv[i] == "up":
 				is_root()
+				tryinternet()
 				d_updater()
 				if Narg < 3:
 					d_update_all()
@@ -66,14 +70,17 @@ def main():
 					for y in range(Narg):
 						if y > i:
 							if "--" not in sys.argv[y]:
+								tryinternet()
 								d_update(sys.argv[y])
 						else:
 							y = i
 			elif sys.argv[i] == "update-repos" or sys.argv[i] == "upr":
 				is_root()
+				tryinternet()
 				d_updater()
 			elif sys.argv[i] == "add-repo" or sys.argv[i] == "addr":
 				is_root()
+				tryinternet()
 				if len(sys.argv) > i+2:
 					d_addr(sys.argv[i+1], sys.argv[i+2])
 				else:
@@ -353,8 +360,22 @@ def d_search(packagename, sa=False):
 			print(pit)
 			_read_desc(result[i])
 
-
-
+def internet():
+	url = "https://github.com/idur-package"
+	timeout = 5
+	try:
+		request = requests.get(url, timeout=timeout)
+		return True
+		
+	except (requests.ConnectionError, requests.Timeout) as exception:
+		return False
+def tryinternet():
+	result=internet()
+	if result:
+		print("Connected to the Internet")
+	else:
+		print("No internet connection.")
+		exit()
 def all_package():
 	path="/etc/idur/repos/*/*"
 	result=glob.glob(path, recursive=True)
