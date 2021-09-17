@@ -80,6 +80,8 @@ def main():
 				d_lr()
 			elif sys.argv[i] == "l" or sys.argv[i] == "list":
 				d_list_all()
+			elif sys.argv[i] == "la" or sys.argv[i] == "list-all":
+				all_package()
 	exit()
 
 def Arch64():
@@ -98,6 +100,7 @@ Use:
     show           <package>                Show details of package
     search         <name>                   Search packages
     list                                    list all installed packages
+    list-all                                list all packages
     update         <package>                Update package
     update                                  Update all package
     update-repos                            Update just repos
@@ -331,8 +334,14 @@ def d_search(packagename, sa=False):
 			print(pit)
 			_read_desc(result[i])
 	
-
-
+def all_package():
+	path="/etc/idur/repos/*/*"
+	result=glob.glob(path, recursive=True)
+	for i in range(len(result)):
+		pit=os.path.basename(result[i])
+		pit = pit[:len(pit) - 3]
+		if pit != "standard" and pit != "__pycach":
+			print(pit)
 
 if __name__ == "__main__":
 	main()
