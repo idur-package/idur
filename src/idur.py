@@ -21,6 +21,16 @@ def main():
 					else:
 						y = i
 						
+		for i in range(Narg):
+			if sys.argv[i] == "reinstall" or sys.argv[i] == "rein":
+				is_root()
+				for y in range(Narg):
+					if y > i:
+						if "--" not in sys.argv[y]:
+							d_reinstall(sys.argv[y])
+					else:
+						y = i
+						
 			if sys.argv[i] == "search" or sys.argv[i] == "se":
 				
 				if Narg < 3:
@@ -101,6 +111,7 @@ Use:
     search         <name>                   Search packages
     list                                    list all installed packages
     list-all                                list all packages
+    reinstall      <package>                Reinstall package
     update         <package>                Update package
     update                                  Update all package
     update-repos                            Update just repos
@@ -134,7 +145,11 @@ def start():
 	os.system("mkdir -p /etc/idur/repos")
 	os.system("mkdir -p /etc/idur/apps")
 
-
+def d_reinstall(packagename):
+	d_remove(packagename)
+	d_install(packagename)
+	
+	
 def d_install(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
@@ -333,7 +348,9 @@ def d_search(packagename, sa=False):
 		if pit != "standard":
 			print(pit)
 			_read_desc(result[i])
-	
+
+
+
 def all_package():
 	path="/etc/idur/repos/*/*"
 	result=glob.glob(path, recursive=True)
