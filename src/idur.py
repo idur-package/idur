@@ -141,9 +141,13 @@ def is_root():
 		print("need root")
 		exit()
 def start():
-	os.system("mkdir -p /etc/idur/")
-	os.system("mkdir -p /etc/idur/repos")
-	os.system("mkdir -p /etc/idur/apps")
+	if os.path.exists("/etc/idur/") == False:
+		if detect_root():
+			os.system("mkdir -p /etc/idur/")
+			os.system("mkdir -p /etc/idur/repos")
+			os.system("mkdir -p /etc/idur/apps")
+		else:
+			print("You need root")
 
 def d_reinstall(packagename):
 	d_remove(packagename)
