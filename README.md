@@ -20,6 +20,15 @@ idur search <search here>
 ## Install
 I've made a test installer, use it with precaution
 
+run this as root or an admin user:
+
+need:
+- curl
+- sudo
+```
+curl https://raw.githubusercontent.com/idur-package/idur/master/install.bash | sudo bash
+```
+
 ## Create idurs
 #### (simple bash knows needed)
 so simple just use the create-idur. Install with
