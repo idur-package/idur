@@ -228,9 +228,16 @@ def d_install(packagename, sug=False, rec=False):
 				
 				if " " in package.Depends[i]:
 					deps = package.Depends[i].split()
-					
-				
-				os.system("apt install -y " + package.Depends[i])
+					inst=True
+					for j in range(len(deps)):
+						deps[j]
+						if deps[j] in str(subprocess.check_output(["apt", "list", "--installed", deps[j]])):
+							print(deps[j] + " is installed")
+							inst=False
+					if inst:
+						os.system("apt install -y " + deps[0])
+				else:
+					os.system("apt install -y " + package.Depends[i])
 	if hasattr(package, 'idurDepends'):
 		for i in range(len(package.idurDepends)):
 			if package.idurDepends[i][0:4] == "rec/":
