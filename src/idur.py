@@ -245,14 +245,38 @@ def d_install(packagename, sug=False, rec=False):
 						os.system("apt install -y " + package.Depends[i])
 	if hasattr(package, 'idurDepends'):
 		for i in range(len(package.idurDepends)):
+			inst=True
 			if package.idurDepends[i][0:4] == "rec/":
 				if rec:
-					os.system("idur install " + package.idurDepends[i][4:len(package.idurDepends[i])])
+					package.idurDepends[i] = package.idurDepends[i][4:len(package.idurDepends[i])]
+				else:
+					inst=False
 			elif package.idurDepends[i][0:4] == "sug/":
 				if sug:
-					os.system("idur install " + package.idurDepends[i][4:len(package.idurDepends[i])])
-			else:
-				os.system("idur install " + package.idurDepends[i])
+					package.idurDepends[i] = package.idurDepends[i][4:len(package.idurDepends[i])]
+				else:
+					inst=False
+					
+			if inst:
+				check=str(subprocess.check_output(["idur", "l"]))
+				
+				if " " in package.idurDepends[i]:
+					deps = package.idurDepends[i].split()
+					inst=True
+					for j in range(len(deps)):
+						deps[j]
+						if deps[j] in check:
+							print(deps[j] + " is installed")
+							inst=False
+					if inst:
+						os.system("idur install " + deps[0])
+				else:
+					inst=True
+					if package.Depends[i] in check:
+							print(package.Depends[i] + " is installed")
+							inst=False
+					if inst:
+						os.system("idur install " + package.Depends[i])
 	
 	if Arch64():
 		if package.Arch == "all":
