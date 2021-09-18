@@ -14,13 +14,13 @@ fi
 apt install -y git curl python3 bash coreutils
 
 cd /tmp/
-rm -vrf idurtemp
-mkdir -p idurtemp
-cd idurtemp/
+rm -vrf idurtmp
+mkdir -p idurtmp
+cd idurtmp/
 curl -LO https://raw.githubusercontent.com/idur-package/idur/v0.1.2/src/idur.py
 chmod a+x idur.py
 ./idur.py add-repo official-repo https://github.com/idur-package/official-repo
 ./idur.py install idur-stable
 cd ..
-rm -vrf idurtemp
+rm -vrf idurtmp/
 cd $(basename $0) #not remember
