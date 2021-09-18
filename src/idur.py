@@ -23,6 +23,8 @@ def main():
 					if y > i:
 						if sys.argv[y] == "-r" or sys.argv[y] == "--recommends":
 							rec=True
+						elif sys.argv[y] == "-s" or sys.argv[y] == "--suggests":
+							sug=True
 						elif "--" not in sys.argv[y]:
 							tryinternet()
 							d_install(sys.argv[y], rec=rec, sug=sug)
@@ -212,10 +214,10 @@ def d_install(packagename, sug=False, rec=False):
 		for i in range(len(package.Depends)):
 			if package.Depends[i][0:4] == "rec/":
 				if rec:
-					os.system("apt install -y " + package.Depends[i])
-			elif package.Depends[i][0:4] == "rec/":
-				if rec:
-					os.system("apt install -y " + package.Depends[i])
+					os.system("apt install -y " + package.Depends[i][4:len(package.Depends[i])])
+			elif package.Depends[i][0:4] == "sug/":
+				if sug:
+					os.system("apt install -y " + package.Depends[i][4:len(package.Depends[i])])
 			else:
 				os.system("apt install -y " + package.Depends[i])
 	if hasattr(package, 'idurDepends'):
