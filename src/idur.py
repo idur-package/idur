@@ -22,6 +22,14 @@ def main():
 							d_install(sys.argv[y])
 					else:
 						y = i
+			if sys.argv[i] == "showinstall" or sys.argv[i] == "showin":
+				for y in range(Narg):
+					if y > i:
+						if "--" not in sys.argv[y]:
+							d_showinstall(sys.argv[y])
+					else:
+						y = i
+						
 						
 		for i in range(Narg):
 			if sys.argv[i] == "reinstall" or sys.argv[i] == "rein":
@@ -210,6 +218,47 @@ def d_install(packagename):
 			os.system(package.Install32)
 		elif package.Arch == "both":
 			os.system(package.Install32)
+
+def d_showremove(packagename):
+	pass
+def d_showinstall(packagename):
+	path='/etc/idur/repos/*/' + packagename + '.py'
+	result=glob.glob(path, recursive=True)
+	if len(result) == 0:
+		print("Package not found")
+		exit()
+	sys.path.insert(1, os.path.dirname(result[0]))
+	
+	package = __import__(packagename)
+	if packagename == "standard":
+		exit()
+		
+	if Arch64():
+		if package.Arch == "all":
+			if hasattr(package, 'Install'):
+				print(str(package.Install))
+		elif package.Arch == "x86_64":
+			if hasattr(package, 'Install64'):
+				print(str(package.Install64))
+		elif package.Arch == "i386":
+			print("just i386")
+		elif package.Arch == "both":
+			if hasattr(package, 'Install64'):
+				print(str(package.Install64))
+	else:
+		if package.Arch == "all":
+			if hasattr(package, 'Install'):
+				print(str(package.Install))
+		elif package.Arch == "x86_64":
+			print("just x86_64")
+		elif package.Arch == "i386":
+			if hasattr(package, 'Install32'):
+				print(str(package.Install32))
+		elif package.Arch == "both":
+			if hasattr(package, 'Install32'):
+				print(str(package.Install32))
+	
+
 def d_showdetails(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
