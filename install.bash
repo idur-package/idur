@@ -17,9 +17,9 @@ cd /tmp/
 rm -vrf idurtemp
 mkdir -p idurtemp
 cd idurtemp/
-curl -LO #link
+curl -LO https://raw.githubusercontent.com/idur-package/idur/v0.1.2/src/idur.py
 chmod a+x idur.py
-./idur.py add-repo official-repo #link
+./idur.py add-repo official-repo https://github.com/idur-package/official-repo
 ./idur.py install idur-stable
 cd ..
 rm -vrf idurtemp
