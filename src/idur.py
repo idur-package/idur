@@ -212,13 +212,24 @@ def d_install(packagename, sug=False, rec=False):
 	
 	if hasattr(package, 'Depends'):
 		for i in range(len(package.Depends)):
+			inst=True
 			if package.Depends[i][0:4] == "rec/":
 				if rec:
-					os.system("apt install -y " + package.Depends[i][4:len(package.Depends[i])])
+					package.Depends[i] = package.Depends[i][4:len(package.Depends[i])]
+				else:
+					inst=False
 			elif package.Depends[i][0:4] == "sug/":
 				if sug:
-					os.system("apt install -y " + package.Depends[i][4:len(package.Depends[i])])
-			else:
+					package.Depends[i] = package.Depends[i][4:len(package.Depends[i])]
+				else:
+					inst=False
+					
+			if inst:
+				
+				if " " in package.Depends[i]:
+					deps = package.Depends[i].split()
+					
+				
 				os.system("apt install -y " + package.Depends[i])
 	if hasattr(package, 'idurDepends'):
 		for i in range(len(package.idurDepends)):
