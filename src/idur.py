@@ -22,14 +22,14 @@ def main():
 							d_install(sys.argv[y])
 					else:
 						y = i
-			if sys.argv[i] == "showinstall" or sys.argv[i] == "showin":
+			if sys.argv[i] == "show-install" or sys.argv[i] == "showin":
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
 							d_showinstall(sys.argv[y])
 					else:
 						y = i
-			if sys.argv[i] == "showremove" or sys.argv[i] == "showrm":
+			if sys.argv[i] == "show-remove" or sys.argv[i] == "showrm":
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
@@ -130,6 +130,8 @@ Use:
     install        <package>                Install package
     remove         <package>                Remove package
     show           <package>                Show details of package
+    show-install   <package>                Show install instructions of package
+    show-remove    <package>                Show remove instructions of package
     search         <name>                   Search packages
     list                                    list all installed packages
     list-all                                list all packages
