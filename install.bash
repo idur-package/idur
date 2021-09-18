@@ -11,6 +11,8 @@ then
     exit
 fi
 
+apt install -y git curl python3 bash coreutils
+
 cd /tmp/
 rm -vrf idurtemp
 mkdir -p idurtemp
