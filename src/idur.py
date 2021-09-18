@@ -11,15 +11,21 @@ def main():
 	help()
 	start()
 	Narg=len(sys.argv) #number of args
+	
+	rec=False
+	sug=False
+	
 	if Narg > 1:
 		for i in range(Narg):
 			if sys.argv[i] == "install" or sys.argv[i] == "in":
 				is_root()
 				for y in range(Narg):
 					if y > i:
-						if "--" not in sys.argv[y]:
+						if sys.argv[y] == "-r" or sys.argv[y] == "--recommends":
+							rec=True
+						elif "--" not in sys.argv[y]:
 							tryinternet()
-							d_install(sys.argv[y])
+							d_install(sys.argv[y], rec=rec, sug=sug)
 					else:
 						y = i
 			if sys.argv[i] == "show-install" or sys.argv[i] == "showin":
@@ -178,7 +184,7 @@ def d_reinstall(packagename):
 	d_install(packagename)
 	
 	
-def d_install(packagename):
+def d_install(packagename, sug=False, rec=False):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
 	if len(result) == 0:
@@ -204,7 +210,14 @@ def d_install(packagename):
 	
 	if hasattr(package, 'Depends'):
 		for i in range(len(package.Depends)):
-			os.system("apt install -y " + package.Depends[i])
+			if package.Depends[i][0:4] == "rec/":
+				if rec:
+					os.system("apt install -y " + package.Depends[i])
+			elif package.Depends[i][0:4] == "rec/":
+				if rec:
+					os.system("apt install -y " + package.Depends[i])
+			else:
+				os.system("apt install -y " + package.Depends[i])
 	if hasattr(package, 'idurDepends'):
 		for i in range(len(package.idurDepends)):
 			os.system("idur install " + package.idurDepends[i])
