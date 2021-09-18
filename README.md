@@ -14,7 +14,12 @@ sudo idur update
 ```
 idur search <search here>
 ```
-## Create idurs (simple bash knows needed)
+
+## Install
+I've made a test installer, use it with precaution
+
+## Create idurs
+#### (simple bash knows needed)
 so simple just use the create-idur. Install with
 ```
 sudo idur install create-idur
