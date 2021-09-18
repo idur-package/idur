@@ -222,7 +222,14 @@ def d_install(packagename, sug=False, rec=False):
 				os.system("apt install -y " + package.Depends[i])
 	if hasattr(package, 'idurDepends'):
 		for i in range(len(package.idurDepends)):
-			os.system("idur install " + package.idurDepends[i])
+			if package.idurDepends[i][0:4] == "rec/":
+				if rec:
+					os.system("idur install " + package.idurDepends[i][4:len(package.idurDepends[i])])
+			elif package.idurDepends[i][0:4] == "sug/":
+				if sug:
+					os.system("idur install " + package.idurDepends[i][4:len(package.idurDepends[i])])
+			else:
+				os.system("idur install " + package.idurDepends[i])
 	
 	if Arch64():
 		if package.Arch == "all":
