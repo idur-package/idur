@@ -29,6 +29,13 @@ def main():
 							d_showinstall(sys.argv[y])
 					else:
 						y = i
+			if sys.argv[i] == "showremove" or sys.argv[i] == "showrm":
+				for y in range(Narg):
+					if y > i:
+						if "--" not in sys.argv[y]:
+							d_showremove(sys.argv[y])
+					else:
+						y = i
 						
 						
 		for i in range(Narg):
@@ -220,7 +227,22 @@ def d_install(packagename):
 			os.system(package.Install32)
 
 def d_showremove(packagename):
-	pass
+	path='/etc/idur/repos/*/' + packagename + '.py'
+	result=glob.glob(path, recursive=True)
+	if len(result) == 0:
+		print("Package not found")
+		exit()
+	sys.path.insert(1, os.path.dirname(result[0]))
+	
+	package = __import__(packagename)
+	if packagename == "standard":
+		exit()
+	
+	if hasattr(package, 'Remove'):
+		print(str(package.Remove))
+	else:
+		print("Error")
+		
 def d_showinstall(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
