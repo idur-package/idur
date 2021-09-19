@@ -204,7 +204,7 @@ def d_install(packagename, sug=False, rec=False):
 				print(package.Conflict[i] + " is in conflict with " + packagename)
 				exit()
 			elif os.path.exists("/usr/bin/idur"):
-				if package.Conflict[i] in str(subprocess.check_output(["idur", "l"])):
+				if isinstalled(package.Conflict[i]):
 					print(package.Conflict[i] + " is in conflict with " + packagename)
 					exit()
 	
@@ -258,21 +258,20 @@ def d_install(packagename, sug=False, rec=False):
 					inst=False
 					
 			if inst:
-				check=str(subprocess.check_output(["idur", "l"]))
 				
 				if " " in package.idurDepends[i]:
 					deps = package.idurDepends[i].split()
 					inst=True
 					for j in range(len(deps)):
 						deps[j]
-						if deps[j] in check:
+						if isinstalled(deps[j]):
 							print(deps[j] + " is installed")
 							inst=False
 					if inst:
 						os.system("idur install " + deps[0])
 				else:
 					inst=True
-					if package.Depends[i] in check:
+					if isinstalled(deps[j]):
 							print(package.Depends[i] + " is installed")
 							inst=False
 					if inst:
@@ -407,6 +406,12 @@ def d_remove(packagename):
 	os.system(package.Remove)
 	os.system("rm -vrf /etc/idur/apps/" + packagename + "-v.py")
 
+def isinstalled(packagename):
+	
+	if os.path.exists("/etc/idur/apps/" + packagename + "-v.py"):
+		return True
+	else:
+		return False
 
 def d_update(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
