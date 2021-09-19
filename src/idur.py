@@ -279,22 +279,22 @@ def d_install(packagename, sug=False, rec=False):
 	
 	if Arch64():
 		if package.Arch == "all":
-			os.system(package.Install)
+			os.system("bash -c \"" + package.Install + "\"")
 		elif package.Arch == "x86_64":
-			os.system(package.Install64)
+			os.system("bash -c \"" + package.Install64 + "\"")
 		elif package.Arch == "i386":
 			print("just i386")
 		elif package.Arch == "both":
-			os.system(package.Install64)
+			os.system("bash -c \"" + package.Install64 + "\"")
 	else:
 		if package.Arch == "all":
-			os.system(package.Install)
+			os.system("bash -c \"" + package.Install + "\"")
 		elif package.Arch == "x86_64":
 			print("just x86_64")
 		elif package.Arch == "i386":
-			os.system(package.Install32)
+			os.system("bash -c \"" + package.Install32 + "\"")
 		elif package.Arch == "both":
-			os.system(package.Install32)
+			os.system("bash -c \"" + package.Install32 + "\"")
 
 def d_showremove(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
@@ -403,7 +403,7 @@ def d_remove(packagename):
 	package = __import__(packagename + "-v")
 	if packagename == "standard":
 		exit()
-	os.system(package.Remove)
+	os.system("bash -c \"" + package.Remove + "\"")
 	os.system("rm -vrf /etc/idur/apps/" + packagename + "-v.py")
 
 def isinstalled(packagename):
