@@ -230,7 +230,6 @@ def d_install(packagename, sug=False, rec=False):
 					deps = package.Depends[i].split()
 					inst=True
 					for j in range(len(deps)):
-						deps[j]
 						if deps[j] in str(subprocess.check_output(["apt", "list", "--installed", deps[j]])):
 							print(deps[j] + " is installed")
 							inst=False
@@ -261,6 +260,7 @@ def d_install(packagename, sug=False, rec=False):
 				
 				if " " in package.idurDepends[i]:
 					deps = package.idurDepends[i].split()
+					print(deps)
 					inst=True
 					for j in range(len(deps)):
 						deps[j]
@@ -271,11 +271,11 @@ def d_install(packagename, sug=False, rec=False):
 						os.system("idur install " + deps[0])
 				else:
 					inst=True
-					if isinstalled(deps[j]):
-							print(package.Depends[i] + " is installed")
+					if isinstalled(package.idurDepends[i]):
+							print(package.idurDepends[i] + " is installed")
 							inst=False
 					if inst:
-						os.system("idur install " + package.Depends[i])
+						os.system("idur install " + package.idurDepends[i])
 	
 	if Arch64():
 		if package.Arch == "all":
