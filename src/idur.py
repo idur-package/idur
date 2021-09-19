@@ -494,12 +494,41 @@ def _read_desc(pathd):
 	prithis= package.Description.replace('\n', ' ')
 	
 	print("- " + prithis[0:50] + "...")
+def _desc(pathd, searchword):
+	sys.path.insert(1, os.path.dirname(pathd))
+	packagename = os.path.basename(pathd)
+	packagename = packagename[:len(packagename) - 3]
+	if packagename != "__pycach" and packagename != "standard":
+		package = __import__(packagename)
+	
+		if searchword in package.Description:
+			return True
+		else:
+			return False
+	else:
+		return False
 def d_search(packagename, sa=False):
 	if sa:
 		path="/etc/idur/repos/*/*"
 	else:
 		path='/etc/idur/repos/*/*' + packagename + '*.py'
 	result=glob.glob(path, recursive=True)
+	
+	if sa==False and packagename != "":
+		print("\nDescription Search\n")
+		
+		dpath="/etc/idur/repos/*/*"
+		dresult=glob.glob(dpath, recursive=True)
+		
+		for j in range(len(dresult)):
+			pit=os.path.basename(dresult[j])
+			pit = pit[:len(pit) - 3]
+			if pit != "standard" or pit != "__pycach":
+				if _desc(dresult[j], packagename):
+					print(pit)
+					_read_desc(dresult[j])
+	
+	print("\nName Search\n")
 	for i in range(len(result)):
 		pit=os.path.basename(result[i])
 		pit = pit[:len(pit) - 3]
