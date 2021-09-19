@@ -23,4 +23,3 @@ chmod a+x idur.py
 ./idur.py install idur-stable
 cd ..
 rm -vrf idurtmp/
-cd $(basename $0) #not remember
