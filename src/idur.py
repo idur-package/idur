@@ -125,7 +125,7 @@ def main():
 	exit()
 
 def Arch64():
-	if "x86_64" not in str(subprocess.check_output(["uname", "-m"])):
+	if "x86_64" in str(subprocess.check_output(["uname", "-m"])):
 		return True
 	else:
 		return False
@@ -279,22 +279,22 @@ def d_install(packagename, sug=False, rec=False):
 	
 	if Arch64():
 		if package.Arch == "all":
-			os.system("bash -c \"" + package.Install + "\"")
+			os.system(package.Install)
 		elif package.Arch == "x86_64":
-			os.system("bash -c \"" + package.Install64 + "\"")
+			os.system(package.Install64)
 		elif package.Arch == "i386":
 			print("just i386")
 		elif package.Arch == "both":
-			os.system("bash -c \"" + package.Install64 + "\"")
+			os.system(package.Install64)
 	else:
 		if package.Arch == "all":
-			os.system("bash -c \"" + package.Install + "\"")
+			os.system(package.Install)
 		elif package.Arch == "x86_64":
 			print("just x86_64")
 		elif package.Arch == "i386":
-			os.system("bash -c \"" + package.Install32 + "\"")
+			os.system(package.Install32)
 		elif package.Arch == "both":
-			os.system("bash -c \"" + package.Install32 + "\"")
+			os.system(package.Install32)
 
 def d_showremove(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
