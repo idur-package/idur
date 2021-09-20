@@ -6,6 +6,7 @@ import glob
 import subprocess
 import requests
 
+# Main Function
 def main():
 	arch = Arch64()
 	help()
@@ -18,7 +19,7 @@ def main():
 	if Narg > 1:
 		for i in range(Narg):
 			if sys.argv[i] == "install" or sys.argv[i] == "in":
-				is_root()
+				check_root()
 				for y in range(Narg):
 					if y > i:
 						if sys.argv[y] == "-r" or sys.argv[y] == "--recommends":
@@ -48,7 +49,7 @@ def main():
 						
 		for i in range(Narg):
 			if sys.argv[i] == "reinstall" or sys.argv[i] == "rein":
-				is_root()
+				check_root()
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
@@ -76,7 +77,7 @@ def main():
 					else:
 						y = i
 			elif sys.argv[i] == "remove" or sys.argv[i] == "rm":
-				is_root()
+				check_root()
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
@@ -84,7 +85,7 @@ def main():
 					else:
 						y = i
 			elif sys.argv[i] == "update" or sys.argv[i] == "up":
-				is_root()
+				check_root()
 				check_internet()
 				update_repos()
 				if Narg < 3:
@@ -98,18 +99,18 @@ def main():
 						else:
 							y = i
 			elif sys.argv[i] == "update-repos" or sys.argv[i] == "upr":
-				is_root()
+				check_root()
 				check_internet()
 				update_repos()
 			elif sys.argv[i] == "add-repo" or sys.argv[i] == "addr":
-				is_root()
+				check_root()
 				check_internet()
 				if len(sys.argv) > i+2:
 					add_repo(sys.argv[i+1], sys.argv[i+2])
 				else:
 					print("add-repo <repo-name> <repo-link>")
 			elif sys.argv[i] == "remove-repo" or sys.argv[i] == "rmr":
-				is_root()
+				check_root()
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
@@ -124,12 +125,14 @@ def main():
 				list_all()
 	exit()
 
+# Return True if 'uname -m' == x86_64
 def Arch64():
 	if "x86_64" in str(subprocess.check_output(["uname", "-m"])):
 		return True
 	else:
 		return False
-	
+
+# Help and version commands
 def help():
 	helpvar="""
 idur <command> <package>
@@ -160,7 +163,8 @@ Use:
 	else:
 		print(helpvar)
 
-def detect_root():
+# Return True if the user has root power
+def root():
 	if os.name == "posix":
 		if "root" not in str(subprocess.check_output(["whoami"])):
 			return False
@@ -169,25 +173,28 @@ def detect_root():
 	else:
 		return True
 
-def is_root():
-	if detect_root() == False:
+# Print if the user has root power
+def check_root():
+	if root() == False:
 		print("need root")
 		exit()
 
+# Create the /etc/idur/
 def create_initial_folders():
 	if os.path.exists("/etc/idur/") == False:
-		if detect_root():
+		if root():
 			os.system("mkdir -p /etc/idur/")
 			os.system("mkdir -p /etc/idur/repos")
 			os.system("mkdir -p /etc/idur/apps")
 		else:
 			print("You need root")
 
+# Function that remove the package, and then install the package again
 def reinstall_packages(packagename):
 	remove_package(packagename)
 	install_package(packagename)
 	
-	
+# install package
 def install_package(packagename, sug=False, rec=False):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
@@ -206,7 +213,7 @@ def install_package(packagename, sug=False, rec=False):
 				print(package.Conflict[i] + " is in conflict with " + packagename)
 				exit()
 			elif os.path.exists("/usr/bin/idur"):
-				if isinstalled(package.Conflict[i]):
+				if package_is_installed(package.Conflict[i]):
 					print(package.Conflict[i] + " is in conflict with " + packagename)
 					exit()
 	
@@ -266,14 +273,14 @@ def install_package(packagename, sug=False, rec=False):
 					inst=True
 					for j in range(len(deps)):
 						deps[j]
-						if isinstalled(deps[j]):
+						if package_is_installed(deps[j]):
 							print(deps[j] + " is installed")
 							inst=False
 					if inst:
 						os.system("idur install " + deps[0])
 				else:
 					inst=True
-					if isinstalled(package.idurDepends[i]):
+					if package_is_installed(package.idurDepends[i]):
 							print(package.idurDepends[i] + " is installed")
 							inst=False
 					if inst:
@@ -298,6 +305,7 @@ def install_package(packagename, sug=False, rec=False):
 		elif package.Arch == "both":
 			os.system(package.Install32)
 
+# Print the remove instructions
 def show_remove_instructions(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
@@ -315,6 +323,7 @@ def show_remove_instructions(packagename):
 	else:
 		print("Error")
 		
+# Print the install instructions
 def show_install_instructions(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
@@ -352,6 +361,7 @@ def show_install_instructions(packagename):
 			if hasattr(package, 'Install32'):
 				print(str(package.Install32))
 	
+# Function that print the principal features of the package, like Name, Version, Description, Architecture, etc.
 def show_package_details(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
@@ -394,6 +404,8 @@ def show_package_details(packagename):
 	print("Description: ")
 	print(package.Description)
 
+# Function that execute the remove instructions and remove the package from /etc/idur/apps/
+# idur remove <name>
 def remove_package(packagename):
 	sys.path.insert(1, "/etc/idur/apps")
 	
@@ -407,13 +419,16 @@ def remove_package(packagename):
 	os.system("bash -c \"" + package.Remove + "\"")
 	os.system("rm -vrf /etc/idur/apps/" + packagename + "-v.py")
 
-def isinstalled(packagename):
+# Return True if the package is in /etc/idur/apps/
+def package_is_installed(packagename):
 	
 	if os.path.exists("/etc/idur/apps/" + packagename + "-v.py"):
 		return True
 	else:
 		return False
 
+# Function to update the package specified
+# idur update <name>
 def update_package(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
@@ -438,6 +453,7 @@ def update_package(packagename):
 	else:
 		print("you don't have installed " + packagename)
 	
+# Function that update all the packages (if it need update) and repositories that you have
 def update_all():
 	path='/etc/idur/apps/*-v.py'
 	result=glob.glob(path, recursive=True)
@@ -447,6 +463,8 @@ def update_all():
 		name = name[:size - 5]
 		update_package(name)
 
+# Function that list all the packages that you have installed
+# the installed apps are saved in /etc/idur/apps/, with -v.py
 def list_installed():
 	path='/etc/idur/apps/*-v.py'
 	result=glob.glob(path, recursive=True)
@@ -457,6 +475,8 @@ def list_installed():
 		name = name[:size - 5]
 		print(name)
 	
+# Function that remove the repository specified
+# idur remove-repo <name>
 def remove_repo(name):
 	path='/etc/idur/repos/' + name + '/standard.py'
 	if os.path.exists(path):
@@ -466,6 +486,7 @@ def remove_repo(name):
 	else:
 		print("you don't have this repository")
 	
+# Function that list all the repositories that you have cloned in /etc/idur/repos/
 def list_repos():
 	path='/etc/idur/repos/*/standard.py'
 	result=glob.glob(path, recursive=True)
@@ -478,18 +499,25 @@ def list_repos():
 			npath = npath[:size - 12]
 			print(npath)
 
+# Function that clone the git repo, and it save in /etc/idur/repos/
+# idur add-repo <name> <link>
 def add_repo(name, link):
 	if os.path.exists("/etc/idur/repos/" + name) == False:
 		os.system("""
 		cd /etc/idur/repos/
 		git clone """ + link + " " + name)
 
+# Function that update the repositories
+# git pull in /etc/idur/repos/*/
+#
+# idur update-repos
 def update_repos():
 	result=glob.glob('/etc/idur/repos/*/standard.py', recursive=True)
 	for i in range(len(result)):
 		os.system("cd " + os.path.dirname(result[i]) + "&& git pull")
-	
-def _read_desc(pathd):
+
+# Print the Description of the pathd
+def print_description_of_path(pathd):
 	sys.path.insert(1, os.path.dirname(pathd))
 	packagename = os.path.basename(pathd)
 	packagename = packagename[:len(packagename) - 3]
@@ -499,7 +527,8 @@ def _read_desc(pathd):
 	
 	print("- " + prithis[0:50] + "...")
 
-def _desc(pathd, searchword):
+# Return True if the searchword is in the Description of pathd
+def search_on_description(pathd, searchword):
 	sys.path.insert(1, os.path.dirname(pathd))
 	packagename = os.path.basename(pathd)
 	packagename = packagename[:len(packagename) - 3]
@@ -533,9 +562,9 @@ def search_packages(packagename, sa=False):
 			pit=os.path.basename(dresult[j])
 			pit = pit[:len(pit) - 3]
 			if pit != "standard" or pit != "__pycach":
-				if _desc(dresult[j], packagename):
+				if search_on_description(dresult[j], packagename):
 					print(pit)
-					_read_desc(dresult[j])
+					print_description_of_path(dresult[j])
 	
 	print("\nName Search\n")
 	for i in range(len(result)):
@@ -543,7 +572,7 @@ def search_packages(packagename, sa=False):
 		pit = pit[:len(pit) - 3]
 		if pit != "standard":
 			print(pit)
-			_read_desc(result[i])
+			print_description_of_path(result[i])
 
 # Return True if there is internet
 def internet():
