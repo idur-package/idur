@@ -518,12 +518,13 @@ def d_search(packagename, sa=False):
 	else:
 		path='/etc/idur/repos/*/*' + packagename + '*.py'
 	result=glob.glob(path, recursive=True)
-	
+	result=order(result)
 	if sa==False and packagename != "":
 		print("\nDescription Search\n")
 		
 		dpath="/etc/idur/repos/*/*"
 		dresult=glob.glob(dpath, recursive=True)
+		dresult=order(dresult)
 		
 		for j in range(len(dresult)):
 			pit=os.path.basename(dresult[j])
