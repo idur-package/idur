@@ -9,7 +9,7 @@ import requests
 # Main Function
 def main():
 	arch = Arch64()
-	help()
+	check_help()
 	create_initial_folders()
 	arg_amount=len(sys.argv) #number of args
 	
@@ -136,7 +136,7 @@ def Arch64():
 		return False
 
 # Help and version commands
-def help():
+def check_help():
 	helptext="""
 idur <command> <package>
 Use:
