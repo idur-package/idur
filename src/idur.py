@@ -9,7 +9,7 @@ import requests
 def main():
 	arch = Arch64()
 	help()
-	start()
+	create_initial_folders()
 	Narg=len(sys.argv) #number of args
 	
 	rec=False
@@ -27,21 +27,21 @@ def main():
 							sug=True
 						elif "--" not in sys.argv[y]:
 							tryinternet()
-							d_install(sys.argv[y], rec=rec, sug=sug)
+							install_package(sys.argv[y], rec=rec, sug=sug)
 					else:
 						y = i
 			if sys.argv[i] == "show-install" or sys.argv[i] == "showin":
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
-							d_showinstall(sys.argv[y])
+							show_install_instructions(sys.argv[y])
 					else:
 						y = i
 			if sys.argv[i] == "show-remove" or sys.argv[i] == "showrm":
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
-							d_showremove(sys.argv[y])
+							show_remove_instructions(sys.argv[y])
 					else:
 						y = i
 						
@@ -53,18 +53,18 @@ def main():
 					if y > i:
 						if "--" not in sys.argv[y]:
 							tryinternet()
-							d_reinstall(sys.argv[y])
+							reinstall_packages(sys.argv[y])
 					else:
 						y = i
 						
 			if sys.argv[i] == "search" or sys.argv[i] == "se":
 				
 				if Narg < 3:
-					d_search("", sa=False)
+					search_packages("", sa=False)
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
-							d_search(sys.argv[y])
+							search_packages(sys.argv[y])
 					else:
 						y = i
 						
@@ -72,7 +72,7 @@ def main():
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
-							d_showdetails(sys.argv[y])
+							show_package_details(sys.argv[y])
 					else:
 						y = i
 			elif sys.argv[i] == "remove" or sys.argv[i] == "rm":
@@ -80,32 +80,32 @@ def main():
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
-							d_remove(sys.argv[y])
+							remove_package(sys.argv[y])
 					else:
 						y = i
 			elif sys.argv[i] == "update" or sys.argv[i] == "up":
 				is_root()
 				tryinternet()
-				d_updater()
+				update_repos()
 				if Narg < 3:
-					d_update_all()
+					update_all()
 				else:
 					for y in range(Narg):
 						if y > i:
 							if "--" not in sys.argv[y]:
 								tryinternet()
-								d_update(sys.argv[y])
+								update_package(sys.argv[y])
 						else:
 							y = i
 			elif sys.argv[i] == "update-repos" or sys.argv[i] == "upr":
 				is_root()
 				tryinternet()
-				d_updater()
+				update_repos()
 			elif sys.argv[i] == "add-repo" or sys.argv[i] == "addr":
 				is_root()
 				tryinternet()
 				if len(sys.argv) > i+2:
-					d_addr(sys.argv[i+1], sys.argv[i+2])
+					add_repo(sys.argv[i+1], sys.argv[i+2])
 				else:
 					print("add-repo <repo-name> <repo-link>")
 			elif sys.argv[i] == "remove-repo" or sys.argv[i] == "rmr":
@@ -113,7 +113,7 @@ def main():
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
-							d_rmr(sys.argv[y])
+							remove_repo(sys.argv[y])
 					else:
 						y = i
 			elif sys.argv[i] == "list-repos" or sys.argv[i] == "lr":
@@ -172,7 +172,7 @@ def is_root():
 	if detect_root() == False:
 		print("need root")
 		exit()
-def start():
+def create_initial_folders():
 	if os.path.exists("/etc/idur/") == False:
 		if detect_root():
 			os.system("mkdir -p /etc/idur/")
@@ -181,12 +181,12 @@ def start():
 		else:
 			print("You need root")
 
-def d_reinstall(packagename):
-	d_remove(packagename)
-	d_install(packagename)
+def reinstall_packages(packagename):
+	remove_package(packagename)
+	install_package(packagename)
 	
 	
-def d_install(packagename, sug=False, rec=False):
+def install_package(packagename, sug=False, rec=False):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
 	if len(result) == 0:
@@ -296,7 +296,7 @@ def d_install(packagename, sug=False, rec=False):
 		elif package.Arch == "both":
 			os.system(package.Install32)
 
-def d_showremove(packagename):
+def show_remove_instructions(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
 	if len(result) == 0:
@@ -313,7 +313,7 @@ def d_showremove(packagename):
 	else:
 		print("Error")
 		
-def d_showinstall(packagename):
+def show_install_instructions(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
 	if len(result) == 0:
@@ -350,8 +350,7 @@ def d_showinstall(packagename):
 			if hasattr(package, 'Install32'):
 				print(str(package.Install32))
 	
-
-def d_showdetails(packagename):
+def show_package_details(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
 	if len(result) == 0:
@@ -392,11 +391,8 @@ def d_showdetails(packagename):
 	
 	print("Description: ")
 	print(package.Description)
-	
-	
-		
 
-def d_remove(packagename):
+def remove_package(packagename):
 	sys.path.insert(1, "/etc/idur/apps")
 	
 	if os.path.exists("/etc/idur/apps/" + packagename + "-v.py") == False:
@@ -416,7 +412,7 @@ def isinstalled(packagename):
 	else:
 		return False
 
-def d_update(packagename):
+def update_package(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
 	if len(result) == 0:
@@ -435,19 +431,20 @@ def d_update(packagename):
 			exit()
 		if package.Version < newpackage.Version:
 			print("update")
-			d_remove(packagename)
-			d_install(packagename)
+			remove_package(packagename)
+			install_package(packagename)
 	else:
 		print("you don't have installed " + packagename)
 	
-def d_update_all():
+def update_all():
 	path='/etc/idur/apps/*-v.py'
 	result=glob.glob(path, recursive=True)
 	for i in range(len(result)):
 		name=os.path.basename(result[i])
 		size = len(name)
 		name = name[:size - 5]
-		d_update(name)
+		update_package(name)
+
 def list_installed():
 	path='/etc/idur/apps/*-v.py'
 	result=glob.glob(path, recursive=True)
@@ -458,7 +455,7 @@ def list_installed():
 		name = name[:size - 5]
 		print(name)
 	
-def d_rmr(name):
+def remove_repo(name):
 	path='/etc/idur/repos/' + name + '/standard.py'
 	if os.path.exists(path):
 		size=len(path)
@@ -478,14 +475,13 @@ def list_repos():
 			size=len(npath)
 			npath = npath[:size - 12]
 			print(npath)
-	
 
-def d_addr(name, link):
+def add_repo(name, link):
 	if os.path.exists("/etc/idur/repos/" + name) == False:
 		os.system("""
 		cd /etc/idur/repos/
 		git clone """ + link + " " + name)
-def d_updater():
+def update_repos():
 	result=glob.glob('/etc/idur/repos/*/standard.py', recursive=True)
 	for i in range(len(result)):
 		os.system("cd " + os.path.dirname(result[i]) + "&& git pull")
@@ -512,7 +508,7 @@ def _desc(pathd, searchword):
 			return False
 	else:
 		return False
-def d_search(packagename, sa=False):
+def search_packages(packagename, sa=False):
 	if sa:
 		path="/etc/idur/repos/*/*"
 	else:
