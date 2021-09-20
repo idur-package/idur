@@ -406,7 +406,7 @@ def show_package_details(packagename):
 
 # Function that execute the remove instructions and remove the package from /etc/idur/apps/
 # idur remove <name>
-def remove_package(packagename):
+def remove_package(packagename, check=False):
 	sys.path.insert(1, "/etc/idur/apps")
 	
 	if os.path.exists("/etc/idur/apps/" + packagename + "-v.py") == False:
