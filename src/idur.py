@@ -117,11 +117,11 @@ def main():
 					else:
 						y = i
 			elif sys.argv[i] == "list-repos" or sys.argv[i] == "lr":
-				d_lr()
+				list_repos()
 			elif sys.argv[i] == "l" or sys.argv[i] == "list":
-				d_list_all()
+				list_installed()
 			elif sys.argv[i] == "la" or sys.argv[i] == "list-all":
-				all_package()
+				list_all()
 	exit()
 
 def Arch64():
@@ -448,7 +448,7 @@ def d_update_all():
 		size = len(name)
 		name = name[:size - 5]
 		d_update(name)
-def d_list_all():
+def list_installed():
 	path='/etc/idur/apps/*-v.py'
 	result=glob.glob(path, recursive=True)
 	result=order(result)
@@ -467,7 +467,7 @@ def d_rmr(name):
 	else:
 		print("you don't have this repository")
 	
-def d_lr():
+def list_repos():
 	path='/etc/idur/repos/*/standard.py'
 	result=glob.glob(path, recursive=True)
 	result=order(result)
@@ -558,7 +558,7 @@ def tryinternet():
 	else:
 		print("No internet connection.")
 		exit()
-def all_package():
+def list_all():
 	path="/etc/idur/repos/*/*"
 	result=glob.glob(path, recursive=True)
 	result=order(result)
