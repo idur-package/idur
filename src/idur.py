@@ -104,7 +104,7 @@ def main():
 				check_root()
 				check_internet()
 				update_repos()
-				
+
 			elif sys.argv[i] == "add-repo" or sys.argv[i] == "addr":
 				check_root()
 				check_internet()
@@ -204,6 +204,7 @@ def install_package(packagename, sug=False, rec=False):
 	if len(result) == 0:
 		print("Package not found")
 		exit()
+	result=order(result)
 	sys.path.insert(1, os.path.dirname(result[0]))
 	
 	package = __import__(packagename)
@@ -224,69 +225,69 @@ def install_package(packagename, sug=False, rec=False):
 	
 	if hasattr(package, 'Depends'):
 		for i in range(len(package.Depends)):
-			inst=True
+			to_install=True
 			if package.Depends[i][0:4] == "rec/":
 				if rec:
 					package.Depends[i] = package.Depends[i][4:len(package.Depends[i])]
 				else:
-					inst=False
+					to_install=False
 			elif package.Depends[i][0:4] == "sug/":
 				if sug:
 					package.Depends[i] = package.Depends[i][4:len(package.Depends[i])]
 				else:
-					inst=False
+					to_install=False
 					
-			if inst:
+			if to_install:
 				
 				if " " in package.Depends[i]:
 					deps = package.Depends[i].split()
-					inst=True
+					to_install=True
 					for j in range(len(deps)):
 						if deps[j] in str(subprocess.check_output(["apt", "list", "--installed", deps[j]])):
 							print(deps[j] + " is installed")
-							inst=False
-					if inst:
+							to_install=False
+					if to_install:
 						os.system("apt install -y " + deps[0])
 				else:
-					inst=True
+					to_install=True
 					if package.Depends[i] in str(subprocess.check_output(["apt", "list", "--installed", package.Depends[i]])):
 							print(package.Depends[i] + " is installed")
-							inst=False
-					if inst:
+							to_install=False
+					if to_install:
 						os.system("apt install -y " + package.Depends[i])
 	if hasattr(package, 'idurDepends'):
 		for i in range(len(package.idurDepends)):
-			inst=True
+			to_install=True
 			if package.idurDepends[i][0:4] == "rec/":
 				if rec:
 					package.idurDepends[i] = package.idurDepends[i][4:len(package.idurDepends[i])]
 				else:
-					inst=False
+					to_install=False
 			elif package.idurDepends[i][0:4] == "sug/":
 				if sug:
 					package.idurDepends[i] = package.idurDepends[i][4:len(package.idurDepends[i])]
 				else:
-					inst=False
+					to_install=False
 					
-			if inst:
+			if to_install:
 				
 				if " " in package.idurDepends[i]:
 					deps = package.idurDepends[i].split()
 					print(deps)
-					inst=True
+					to_install=True
 					for j in range(len(deps)):
 						deps[j]
 						if package_is_installed(deps[j]):
 							print(deps[j] + " is installed")
-							inst=False
-					if inst:
+							to_install=False
+					if to_install:
 						os.system("idur install " + deps[0])
 				else:
-					inst=True
+					to_install=True
 					if package_is_installed(package.idurDepends[i]):
 							print(package.idurDepends[i] + " is installed")
-							inst=False
-					if inst:
+							to_install=False
+					if to_install:
 						os.system("idur install " + package.idurDepends[i])
 	
 	if Arch64():
