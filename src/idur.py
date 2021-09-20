@@ -451,6 +451,7 @@ def d_update_all():
 def d_list_all():
 	path='/etc/idur/apps/*-v.py'
 	result=glob.glob(path, recursive=True)
+	result=order(result)
 	for i in range(len(result)):
 		name=os.path.basename(result[i])
 		size = len(name)
@@ -469,6 +470,7 @@ def d_rmr(name):
 def d_lr():
 	path='/etc/idur/repos/*/standard.py'
 	result=glob.glob(path, recursive=True)
+	result=order(result)
 	for i in range(len(result)):
 		if os.path.exists(result[i]):
 			
@@ -558,11 +560,32 @@ def tryinternet():
 def all_package():
 	path="/etc/idur/repos/*/*"
 	result=glob.glob(path, recursive=True)
+	result=order(result)
 	for i in range(len(result)):
 		pit=os.path.basename(result[i])
 		pit = pit[:len(pit) - 3]
 		if pit != "standard" and pit != "__pycach":
 			print(pit)
+def order(output):
+	lenoutput = len(output)
+	j = False
+	i = True
+
+	while i == True:
+		for k in range(lenoutput):
+			if k != 0:
+				if output[k] < output[k-1]:
+					j = True
+					m = output[k-1]
+					output[k-1] = output[k]
+					output[k] = m
+		if j == True:
+			j = False
+			i = True
+		else:
+			i = False
+	
+	return output
 
 if __name__ == "__main__":
 	main()
