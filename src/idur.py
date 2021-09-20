@@ -134,7 +134,7 @@ def Arch64():
 
 # Help and version commands
 def help():
-	helpvar="""
+	helptext="""
 idur <command> <package>
 Use:
     install        <package>                Install package
@@ -155,13 +155,13 @@ Use:
 			"""
 	if len(sys.argv) > 1:
 		if sys.argv[1] == "--help" or sys.argv[1] == "-h":
-			print(helpvar)
+			print(helptext)
 			exit()
 		if sys.argv[1] == "--version" or sys.argv[1] == "-v":
 			print("v0.1.5")
 			exit()
 	else:
-		print(helpvar)
+		print(helptext)
 
 # Return True if the user has root power
 def root():
