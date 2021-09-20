@@ -600,30 +600,30 @@ def list_all():
 	result=glob.glob(path, recursive=True)
 	result=order(result)
 	for i in range(len(result)):
-		pit=os.path.basename(result[i])
-		pit = pit[:len(pit) - 3]
-		if pit != "standard" and pit != "__pycach":
-			print(pit)
+		result_out = os.path.basename(result[i])
+		result_out = result_out[:len(result_out) - 3]
+		if result_out != "standard" and result_out != "__pycach":
+			print(result_out)
 
 # alphabetical order
 def order(output):
-	lenoutput = len(output)
-	j = False
-	i = True
+	output_amount = len(output)
+	verifyloop = False
+	loop = True
 
-	while i == True:
-		for k in range(lenoutput):
+	while loop:
+		for k in range(output_amount):
 			if k != 0:
 				if output[k] < output[k-1]:
-					j = True
-					m = output[k-1]
+					verifyloop = True
+					number_temp = output[k-1]
 					output[k-1] = output[k]
-					output[k] = m
-		if j == True:
-			j = False
-			i = True
+					output[k] = number_temp
+		if verifyloop == True:
+			verifyloop = False
+			loop = True
 		else:
-			i = False
+			loop = False
 	
 	return output
 
