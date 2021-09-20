@@ -11,35 +11,35 @@ def main():
 	arch = Arch64()
 	help()
 	create_initial_folders()
-	Narg=len(sys.argv) #number of args
+	arg_amount=len(sys.argv) #number of args
 	
-	rec=False
-	sug=False
+	recommends=False
+	suggests=False
 	
-	if Narg > 1:
-		for i in range(Narg):
+	if arg_amount > 1:
+		for i in range(arg_amount):
 			if sys.argv[i] == "install" or sys.argv[i] == "in":
 				check_root()
-				for y in range(Narg):
+				for y in range(arg_amount):
 					if y > i:
 						if sys.argv[y] == "-r" or sys.argv[y] == "--recommends":
-							rec=True
+							recommends=True
 						elif sys.argv[y] == "-s" or sys.argv[y] == "--suggests":
-							sug=True
+							suggests=True
 						elif "--" not in sys.argv[y]:
 							check_internet()
-							install_package(sys.argv[y], rec=rec, sug=sug)
+							install_package(sys.argv[y], rec=recommends, sug=suggests)
 					else:
 						y = i
 			if sys.argv[i] == "show-install" or sys.argv[i] == "showin":
-				for y in range(Narg):
+				for y in range(arg_amount):
 					if y > i:
 						if "--" not in sys.argv[y]:
 							show_install_instructions(sys.argv[y])
 					else:
 						y = i
 			if sys.argv[i] == "show-remove" or sys.argv[i] == "showrm":
-				for y in range(Narg):
+				for y in range(arg_amount):
 					if y > i:
 						if "--" not in sys.argv[y]:
 							show_remove_instructions(sys.argv[y])
@@ -47,10 +47,10 @@ def main():
 						y = i
 						
 						
-		for i in range(Narg):
+		for i in range(arg_amount):
 			if sys.argv[i] == "reinstall" or sys.argv[i] == "rein":
 				check_root()
-				for y in range(Narg):
+				for y in range(arg_amount):
 					if y > i:
 						if "--" not in sys.argv[y]:
 							check_internet()
@@ -59,10 +59,9 @@ def main():
 						y = i
 						
 			if sys.argv[i] == "search" or sys.argv[i] == "se":
-				
-				if Narg < 3:
+				if arg_amount < 3:
 					search_packages("", search_all=False)
-				for y in range(Narg):
+				for y in range(arg_amount):
 					if y > i:
 						if "--" not in sys.argv[y]:
 							search_packages(sys.argv[y])
@@ -70,38 +69,42 @@ def main():
 						y = i
 						
 			if sys.argv[i] == "show" or sys.argv[i] == "sh":
-				for y in range(Narg):
+				for y in range(arg_amount):
 					if y > i:
 						if "--" not in sys.argv[y]:
 							show_package_details(sys.argv[y])
 					else:
 						y = i
+
 			elif sys.argv[i] == "remove" or sys.argv[i] == "rm":
 				check_root()
-				for y in range(Narg):
+				for y in range(arg_amount):
 					if y > i:
 						if "--" not in sys.argv[y]:
 							remove_package(sys.argv[y])
 					else:
 						y = i
+
 			elif sys.argv[i] == "update" or sys.argv[i] == "up":
 				check_root()
 				check_internet()
 				update_repos()
-				if Narg < 3:
+				if arg_amount < 3:
 					update_all()
 				else:
-					for y in range(Narg):
+					for y in range(arg_amount):
 						if y > i:
 							if "--" not in sys.argv[y]:
 								check_internet()
 								update_package(sys.argv[y])
 						else:
 							y = i
+
 			elif sys.argv[i] == "update-repos" or sys.argv[i] == "upr":
 				check_root()
 				check_internet()
 				update_repos()
+				
 			elif sys.argv[i] == "add-repo" or sys.argv[i] == "addr":
 				check_root()
 				check_internet()
@@ -111,7 +114,7 @@ def main():
 					print("add-repo <repo-name> <repo-link>")
 			elif sys.argv[i] == "remove-repo" or sys.argv[i] == "rmr":
 				check_root()
-				for y in range(Narg):
+				for y in range(arg_amount):
 					if y > i:
 						if "--" not in sys.argv[y]:
 							remove_repo(sys.argv[y])
