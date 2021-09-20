@@ -26,7 +26,7 @@ def main():
 						elif sys.argv[y] == "-s" or sys.argv[y] == "--suggests":
 							sug=True
 						elif "--" not in sys.argv[y]:
-							tryinternet()
+							check_internet()
 							install_package(sys.argv[y], rec=rec, sug=sug)
 					else:
 						y = i
@@ -52,7 +52,7 @@ def main():
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
-							tryinternet()
+							check_internet()
 							reinstall_packages(sys.argv[y])
 					else:
 						y = i
@@ -85,7 +85,7 @@ def main():
 						y = i
 			elif sys.argv[i] == "update" or sys.argv[i] == "up":
 				is_root()
-				tryinternet()
+				check_internet()
 				update_repos()
 				if Narg < 3:
 					update_all()
@@ -93,17 +93,17 @@ def main():
 					for y in range(Narg):
 						if y > i:
 							if "--" not in sys.argv[y]:
-								tryinternet()
+								check_internet()
 								update_package(sys.argv[y])
 						else:
 							y = i
 			elif sys.argv[i] == "update-repos" or sys.argv[i] == "upr":
 				is_root()
-				tryinternet()
+				check_internet()
 				update_repos()
 			elif sys.argv[i] == "add-repo" or sys.argv[i] == "addr":
 				is_root()
-				tryinternet()
+				check_internet()
 				if len(sys.argv) > i+2:
 					add_repo(sys.argv[i+1], sys.argv[i+2])
 				else:
@@ -130,7 +130,6 @@ def Arch64():
 	else:
 		return False
 	
-
 def help():
 	helpvar="""
 idur <command> <package>
@@ -160,6 +159,7 @@ Use:
 			exit()
 	else:
 		print(helpvar)
+
 def detect_root():
 	if os.name == "posix":
 		if "root" not in str(subprocess.check_output(["whoami"])):
@@ -168,10 +168,12 @@ def detect_root():
 			return True
 	else:
 		return True
+
 def is_root():
 	if detect_root() == False:
 		print("need root")
 		exit()
+
 def create_initial_folders():
 	if os.path.exists("/etc/idur/") == False:
 		if detect_root():
@@ -481,6 +483,7 @@ def add_repo(name, link):
 		os.system("""
 		cd /etc/idur/repos/
 		git clone """ + link + " " + name)
+
 def update_repos():
 	result=glob.glob('/etc/idur/repos/*/standard.py', recursive=True)
 	for i in range(len(result)):
@@ -495,6 +498,7 @@ def _read_desc(pathd):
 	prithis= package.Description.replace('\n', ' ')
 	
 	print("- " + prithis[0:50] + "...")
+
 def _desc(pathd, searchword):
 	sys.path.insert(1, os.path.dirname(pathd))
 	packagename = os.path.basename(pathd)
@@ -508,6 +512,9 @@ def _desc(pathd, searchword):
 			return False
 	else:
 		return False
+
+# Search available packages
+# The "Search Engine" is based on if the input is in the Name or Description
 def search_packages(packagename, sa=False):
 	if sa:
 		path="/etc/idur/repos/*/*"
@@ -538,6 +545,7 @@ def search_packages(packagename, sa=False):
 			print(pit)
 			_read_desc(result[i])
 
+# Return True if there is internet
 def internet():
 	url = "https://github.com/idur-package"
 	timeout = 5
@@ -547,13 +555,17 @@ def internet():
 		
 	except (requests.ConnectionError, requests.Timeout) as exception:
 		return False
-def tryinternet():
+
+# Print if there is internet
+def check_internet():
 	result=internet()
 	if result:
 		print("Connected to the Internet")
 	else:
 		print("No internet connection.")
 		exit()
+
+# list all available packages
 def list_all():
 	path="/etc/idur/repos/*/*"
 	result=glob.glob(path, recursive=True)
@@ -563,6 +575,8 @@ def list_all():
 		pit = pit[:len(pit) - 3]
 		if pit != "standard" and pit != "__pycach":
 			print(pit)
+
+# alphabetical order
 def order(output):
 	lenoutput = len(output)
 	j = False
