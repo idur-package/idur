@@ -18,8 +18,6 @@ idur search <search here>
 ```
 
 ## Install
-I've made a test installer, use it with precaution
-
 run this as root or an admin user:
 
 need:
