@@ -494,10 +494,10 @@ def list_repos():
 	for i in range(len(result)):
 		if os.path.exists(result[i]):
 			
-			npath = result[i][16:]
-			size=len(npath)
-			npath = npath[:size - 12]
-			print(npath)
+			package_name = result[i][16:]
+			size=len(package_name)
+			package_name = package_name[:size - 12]
+			print(package_name)
 
 # Function that clone the git repo, and it save in /etc/idur/repos/
 # idur add-repo <name> <link>
