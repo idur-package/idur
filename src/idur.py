@@ -357,6 +357,9 @@ def d_showdetails(packagename):
 	if len(result) == 0:
 		print("Package not found")
 		exit()
+	
+	print("Repo: " + result[0][16:len(result[0])][:-1*(len(packagename)+4)])
+	
 	sys.path.insert(1, os.path.dirname(result[0]))
 	
 	
