@@ -18,8 +18,6 @@ idur search <search here>
 ```
 
 ## Install
-I've made a test installer, use it with precaution
-
 run this as root or an admin user:
 
 need:
@@ -28,7 +26,11 @@ need:
 ```
 curl https://raw.githubusercontent.com/idur-package/idur/master/install.bash | sudo bash
 ```
-
+## Non-Free packages
+Active Non-Free packages with
+```
+sudo idur install non-free-repo
+```
 ## Create idurs
 #### (simple bash knows needed)
 so simple just use the create-idur. Install with
