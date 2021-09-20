@@ -61,7 +61,7 @@ def main():
 			if sys.argv[i] == "search" or sys.argv[i] == "se":
 				
 				if Narg < 3:
-					search_packages("", sa=False)
+					search_packages("", search_all=False)
 				for y in range(Narg):
 					if y > i:
 						if "--" not in sys.argv[y]:
@@ -544,34 +544,35 @@ def search_on_description(pathd, searchword):
 
 # Search available packages
 # The "Search Engine" is based on if the input is in the Name or Description
-def search_packages(packagename, sa=False):
-	if sa:
+def search_packages(packagename, search_all=False):
+	if search_all:
 		path="/etc/idur/repos/*/*"
 	else:
 		path='/etc/idur/repos/*/*' + packagename + '*.py'
 	result=glob.glob(path, recursive=True)
 	result=order(result)
-	if sa==False and packagename != "":
+	if search_all==False and packagename != "":
+
+		# Description Search
 		print("\nDescription Search\n")
-		
 		dpath="/etc/idur/repos/*/*"
 		dresult=glob.glob(dpath, recursive=True)
 		dresult=order(dresult)
-		
 		for j in range(len(dresult)):
-			pit=os.path.basename(dresult[j])
-			pit = pit[:len(pit) - 3]
-			if pit != "standard" or pit != "__pycach":
+			result_out = os.path.basename(dresult[j])
+			result_out = result_out[:len(result_out) - 3]
+			if result_out != "standard" or result_out != "__pycach":
 				if search_on_description(dresult[j], packagename):
-					print(pit)
+					print(result_out)
 					print_description_of_path(dresult[j])
 	
+	# Name Search
 	print("\nName Search\n")
 	for i in range(len(result)):
-		pit=os.path.basename(result[i])
-		pit = pit[:len(pit) - 3]
-		if pit != "standard":
-			print(pit)
+		result_out=os.path.basename(result[i])
+		result_out = result_out[:len(result_out) - 3]
+		if result_out != "standard":
+			print(result_out)
 			print_description_of_path(result[i])
 
 # Return True if there is internet
