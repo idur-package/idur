@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import os
 import sys
-from sys import exit
+from sys import exit, path
 import glob
 import subprocess
 import requests
@@ -514,23 +514,23 @@ def add_repo(name, link):
 def update_repos():
 	result=glob.glob('/etc/idur/repos/*/standard.py', recursive=True)
 	for i in range(len(result)):
-		os.system("cd " + os.path.dirname(result[i]) + "&& git pull")
+		os.system("cd " + os.path.dirname(result[i]) + " && git pull")
 
-# Print the Description of the pathd
-def print_description_of_path(pathd):
-	sys.path.insert(1, os.path.dirname(pathd))
-	packagename = os.path.basename(pathd)
+# Print the Description of the path_input
+def print_description_of_path(path_input):
+	sys.path.insert(1, os.path.dirname(path_input))
+	packagename = os.path.basename(path_input)
 	packagename = packagename[:len(packagename) - 3]
 	package = __import__(packagename)
 	
-	prithis= package.Description.replace('\n', ' ')
+	description = package.Description.replace('\n', ' ')
 	
-	print("- " + prithis[0:50] + "...")
+	print("- " + description[0:50] + "...")
 
-# Return True if the searchword is in the Description of pathd
-def search_on_description(pathd, searchword):
-	sys.path.insert(1, os.path.dirname(pathd))
-	packagename = os.path.basename(pathd)
+# Return True if the searchword is in the Description of path_input
+def search_on_description(path_input, searchword):
+	sys.path.insert(1, os.path.dirname(path_input))
+	packagename = os.path.basename(path_input)
 	packagename = packagename[:len(packagename) - 3]
 	if packagename != "__pycach" and packagename != "standard":
 		package = __import__(packagename)
