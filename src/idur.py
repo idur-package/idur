@@ -161,7 +161,7 @@ Use:
 			print(helptext)
 			exit()
 		if sys.argv[1] == "--version" or sys.argv[1] == "-v":
-			print("v0.1.5")
+			print("v0.1.6")
 			exit()
 	else:
 		print(helptext)
