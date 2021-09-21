@@ -204,7 +204,7 @@ def install_package(packagename, sug=False, rec=False):
 	if len(result) == 0:
 		print("Package not found")
 		exit()
-	result=order(result)
+	result=order_array(result)
 	sys.path.insert(1, os.path.dirname(result[0]))
 	
 	package = __import__(packagename)
@@ -472,7 +472,7 @@ def update_all():
 def list_installed():
 	path='/etc/idur/apps/*-v.py'
 	result=glob.glob(path, recursive=True)
-	result=order(result)
+	result=order_array(result)
 	for i in range(len(result)):
 		name=os.path.basename(result[i])
 		size = len(name)
@@ -494,7 +494,7 @@ def remove_repo(name):
 def list_repos():
 	path='/etc/idur/repos/*/standard.py'
 	result=glob.glob(path, recursive=True)
-	result=order(result)
+	result=order_array(result)
 	for i in range(len(result)):
 		if os.path.exists(result[i]):
 			
@@ -554,14 +554,14 @@ def search_packages(packagename, search_all=False):
 	else:
 		path='/etc/idur/repos/*/*' + packagename + '*.py'
 	result=glob.glob(path, recursive=True)
-	result=order(result)
+	result=order_array(result)
 	if search_all==False and packagename != "":
 
 		# Description Search
 		print("\nDescription Search\n")
 		dpath="/etc/idur/repos/*/*"
 		dresult=glob.glob(dpath, recursive=True)
-		dresult=order(dresult)
+		dresult=order_array(dresult)
 		for j in range(len(dresult)):
 			result_out = os.path.basename(dresult[j])
 			result_out = result_out[:len(result_out) - 3]
@@ -603,7 +603,7 @@ def check_internet():
 def list_all():
 	path="/etc/idur/repos/*/*"
 	result=glob.glob(path, recursive=True)
-	result=order(result)
+	result=order_array(result)
 	for i in range(len(result)):
 		result_out = os.path.basename(result[i])
 		result_out = result_out[:len(result_out) - 3]
@@ -611,24 +611,19 @@ def list_all():
 			print(result_out)
 
 # alphabetical order
-def order(output):
+def order_array(output):
 	output_amount = len(output)
-	verifyloop = False
-	loop = True
+	with_problem = True
 
-	while loop:
-		for k in range(output_amount):
-			if k != 0:
-				if output[k] < output[k-1]:
-					verifyloop = True
-					number_temp = output[k-1]
-					output[k-1] = output[k]
-					output[k] = number_temp
-		if verifyloop == True:
-			verifyloop = False
-			loop = True
-		else:
-			loop = False
+	while with_problem:
+		with_problem = False
+		for i in range(output_amount):
+			if i != 0:
+				if output[i] < output[i-1]:
+					number_temp = output[i-1]
+					output[i-1] = output[i]
+					output[i] = number_temp
+					with_problem = True
 	
 	return output
 
