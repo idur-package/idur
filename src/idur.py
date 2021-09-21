@@ -411,7 +411,7 @@ def show_package_details(packagename):
 	print("Description: ")
 	print(package.Description)
 
-# test
+# Return True if the package that you want remove, it's a depends of another package
 def is_idurDepends_of_installed_packages(idurDepend):
 	path='/etc/idur/apps/*-v.py'
 	result=glob.glob(path, recursive=True)
@@ -434,13 +434,6 @@ def is_idurDepends_of_installed_packages(idurDepend):
 							return True
 	return False
 
-
-			
-
-	
-
-
-	
 # Function that execute the remove instructions and remove the package from /etc/idur/apps/
 # idur remove <name>
 def remove_package(packagename, check=True):
