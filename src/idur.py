@@ -263,11 +263,35 @@ def create_initial_folders():
 
 # Function that remove the package, and then install the package again
 def reinstall_packages(packagename, ignore=False):
+	if ignore:
+
+		print("\n\n\nWarning!!\n\n\n")
+
+		print("-i or --ignore ignores all Conflicts and Architectures")
+		ask=input("Are You Sure that you want to use the -i or --ignore parameter? (Y/n)")
+		if ask.lower() == "y":
+			print("Continue...")
+		else:
+			print("Aborting")
+			exit()
 	remove_package(packagename, check=False)
-	install_package(packagename, ignore=ignore)
+	install_package(packagename, ignore=ignore, ignoreignore=True)
 	
 # install package
-def install_package(packagename, sug=False, rec=False, ignore=False):
+def install_package(packagename, sug=False, rec=False, ignore=False, ignoreignore=False):
+
+	if ignore and ignoreignore==False:
+
+		print("\n\n\nWarning!!\n\n\n")
+
+		print("-i or --ignore ignores all Conflicts and Architectures")
+		ask=input("Are You Sure that you want to use the -i or --ignore parameter? (Y/n)")
+		if ask.lower() == "y":
+			print("Continue...")
+		else:
+			print("Aborting")
+			exit()
+
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
 	if len(result) == 0:
