@@ -612,7 +612,7 @@ def update_package(packagename):
 			exit()
 		if package.Version < newpackage.Version:
 			print("update")
-			remove_package(packagename, check=False)
+			remove_package(packagename, check=False, ignore_check=True)
 			install_package(packagename)
 	else:
 		print("you don't have installed " + packagename)
