@@ -213,7 +213,18 @@ def install_package(packagename, sug=False, rec=False):
 	package = __import__(packagename)
 	if packagename == "standard":
 		exit()
-		
+	
+	if Arch64():
+		if package.Arch == "all" or package.Arch == "x86_64" or package.Arch == "both":
+			pass
+		elif package.Arch == "i386":
+			exit()
+	else:
+		if package.Arch == "all" or package.Arch == "i386" or package.Arch == "both":
+			pass
+		elif package.Arch == "x86_64":
+			exit()
+
 	if hasattr(package, 'Conflict'):
 		for i in range(len(package.Conflict)):
 			if package.Conflict[i] in str(subprocess.check_output(["apt", "list", "--installed", package.Conflict[i]])):
