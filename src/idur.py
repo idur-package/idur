@@ -271,7 +271,7 @@ def reinstall_packages(packagename, ignore=False):
 
 def warning_ignore():
 	print("\n\n\nWarning!!\n\n\n")
-	print("-i or --ignore ignores all Conflicts and Architectures")
+	print("-i or --ignore ignores all Depends, Conflicts and Architectures")
 	ask=input("Are You Sure that you want to use the -i or --ignore parameter? (Y/n)")
 	if ask.lower() == "y":
 		print("Continue...")
