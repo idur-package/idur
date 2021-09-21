@@ -87,7 +87,9 @@ def main():
 							remove_package(sys.argv[y],check=check)
 					else:
 						y = i
-
+			elif sys.argv[i] == "is-installed" or sys.argv[i] == "ii":
+				if len(sys.argv) > 2:
+					print(package_is_installed(sys.argv[2]))
 			elif sys.argv[i] == "update" or sys.argv[i] == "up":
 				check_root()
 				check_internet()
@@ -148,6 +150,7 @@ Use:
     show           <package>                Show details of package
     show-install   <package>                Show install instructions of package
     show-remove    <package>                Show remove instructions of package
+    is-installed   <package>                Show True if the package is installed
     search         <name>                   Search packages
     list                                    list all installed packages
     list-all                                list all packages
@@ -164,7 +167,7 @@ Use:
 			print(helptext)
 			exit()
 		if sys.argv[1] == "--version" or sys.argv[1] == "-v":
-			print("v0.1.6")
+			print("v0.1.7")
 			exit()
 	else:
 		print(helptext)
