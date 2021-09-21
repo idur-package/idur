@@ -86,7 +86,7 @@ def main():
 				check_root()
 				for y in range(arg_amount):
 					if y > i:
-						if sys.argv[y] == "-n" or sys.argv[y] == "--no-check":
+						if sys.argv[y] == "-i" or sys.argv[y] == "--ignore":
 							check=False
 						elif "--" not in sys.argv[y]:
 							remove_package(sys.argv[y],check=check)
@@ -185,7 +185,7 @@ Use:
                                                     Architecture, everything.
 
     remove or rm           <package>                Remove package
-      -n --no-check                                 no check if other packages
+      -i --ignore                                   no check if other packages
                                                     depends on the package
                                                     that you want remove
 
@@ -264,19 +264,21 @@ def create_initial_folders():
 # Function that remove the package, and then install the package again
 def reinstall_packages(packagename, ignore=False):
 	if ignore:
-
-		print("\n\n\nWarning!!\n\n\n")
-
-		print("-i or --ignore ignores all Conflicts and Architectures")
-		ask=input("Are You Sure that you want to use the -i or --ignore parameter? (Y/n)")
-		if ask.lower() == "y":
-			print("Continue...")
-		else:
-			print("Aborting")
-			exit()
-	remove_package(packagename, check=False)
+		warning_ignore()
+		
+	remove_package(packagename, check=False, ignore_check=True)
 	install_package(packagename, ignore=ignore, ignoreignore=True)
-	
+
+def warning_ignore():
+	print("\n\n\nWarning!!\n\n\n")
+	print("-i or --ignore ignores all Conflicts and Architectures")
+	ask=input("Are You Sure that you want to use the -i or --ignore parameter? (Y/n)")
+	if ask.lower() == "y":
+		print("Continue...")
+	else:
+		print("Aborting")
+		exit()
+
 # install package
 def install_package(packagename, sug=False, rec=False, ignore=False, ignoreignore=False):
 
@@ -551,7 +553,7 @@ def is_idurDepends_of_installed_packages(idurDepend):
 
 # Function that execute the remove instructions and remove the package from /etc/idur/apps/
 # idur remove <name>
-def remove_package(packagename, check=True):
+def remove_package(packagename, check=True, ignore_check=False):
 	sys.path.insert(1, "/etc/idur/apps")
 	
 	if os.path.exists("/etc/idur/apps/" + packagename + "-v.py") == False:
@@ -561,6 +563,9 @@ def remove_package(packagename, check=True):
 	if check:
 		if is_idurDepends_of_installed_packages(packagename):
 			exit()
+	else:
+		if ignore_check==False:
+			warning_ignore()
 
 	package = __import__(packagename + "-v")
 	if packagename == "standard":
