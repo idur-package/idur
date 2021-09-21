@@ -584,7 +584,7 @@ def search_on_description(path_input, searchword):
 	if packagename != "__pycach" and packagename != "standard":
 		package = __import__(packagename)
 	
-		if searchword in package.Description:
+		if searchword.lower() in package.Description.lower():
 			return True
 		else:
 			return False
