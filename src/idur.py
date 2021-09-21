@@ -15,6 +15,7 @@ def main():
 	
 	recommends=False
 	suggests=False
+	check=True
 	
 	if arg_amount > 1:
 		for i in range(arg_amount):
@@ -80,8 +81,10 @@ def main():
 				check_root()
 				for y in range(arg_amount):
 					if y > i:
-						if "--" not in sys.argv[y]:
-							remove_package(sys.argv[y])
+						if sys.argv[y] == "-n" or sys.argv[y] == "--no-check":
+							check=False
+						elif "--" not in sys.argv[y]:
+							remove_package(sys.argv[y],check=check)
 					else:
 						y = i
 
@@ -194,7 +197,7 @@ def create_initial_folders():
 
 # Function that remove the package, and then install the package again
 def reinstall_packages(packagename):
-	remove_package(packagename)
+	remove_package(packagename, check=False)
 	install_package(packagename)
 	
 # install package
@@ -408,15 +411,49 @@ def show_package_details(packagename):
 	print("Description: ")
 	print(package.Description)
 
+# test
+def is_idurDepends_of_installed_packages(idurDepend):
+	path='/etc/idur/apps/*-v.py'
+	result=glob.glob(path, recursive=True)
+	for i in range(len(result)):
+		sys.path.insert(1, "/etc/idur/apps")
+		name=os.path.basename(result[i])
+		size = len(name)
+		name = name[:size - 3]
+		package = __import__(name)
+		if hasattr(package, 'idurDepends'):
+			for j in range (len(package.idurDepends)):
+				if package.idurDepends[j] == idurDepend:
+					print(package.Name + " depends on " + idurDepend)
+					return True
+				elif " " in package.idurDepends[j]:
+					package_with_options = package.idurDepends[j].split()
+					for k in range (len(package_with_options)):
+						if package_with_options[k] == idurDepend:
+							print(package.Name + " depends on " + idurDepend)
+							return True
+	return False
+
+
+			
+
+	
+
+
+	
 # Function that execute the remove instructions and remove the package from /etc/idur/apps/
 # idur remove <name>
-def remove_package(packagename, check=False):
+def remove_package(packagename, check=True):
 	sys.path.insert(1, "/etc/idur/apps")
 	
 	if os.path.exists("/etc/idur/apps/" + packagename + "-v.py") == False:
 		print("you don't have installed " + packagename)
 		exit()
 	
+	if check:
+		if is_idurDepends_of_installed_packages(packagename):
+			exit()
+
 	package = __import__(packagename + "-v")
 	if packagename == "standard":
 		exit()
