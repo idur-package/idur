@@ -15,6 +15,7 @@ def main():
 	
 	recommends=False
 	suggests=False
+	ignore=False
 	check=True
 	
 	if arg_amount > 1:
@@ -27,9 +28,11 @@ def main():
 							recommends=True
 						elif sys.argv[y] == "-s" or sys.argv[y] == "--suggests":
 							suggests=True
+						elif sys.argv[y] == "-i" or sys.argv[y] == "--ignore":
+							ignore=True
 						elif "--" not in sys.argv[y]:
 							check_internet()
-							install_package(sys.argv[y], rec=recommends, sug=suggests)
+							install_package(sys.argv[y], rec=recommends, sug=suggests, ignore=ignore)
 					else:
 						y = i
 			if sys.argv[i] == "show-install" or sys.argv[i] == "showin":
@@ -53,9 +56,11 @@ def main():
 				check_root()
 				for y in range(arg_amount):
 					if y > i:
-						if "--" not in sys.argv[y]:
+						if sys.argv[y] == "-i" or sys.argv[y] == "--ignore":
+							ignore=True
+						elif "--" not in sys.argv[y]:
 							check_internet()
-							reinstall_packages(sys.argv[y])
+							reinstall_packages(sys.argv[y], ignore=ignore)
 					else:
 						y = i
 						
@@ -161,10 +166,68 @@ Use:
     add-repo       <repo-name> <repo-link>  Add a new repo
     remove-repo    <repo name>              Remove a repo
     list-repos                              list all repo
+    help                                    see expert help
 			"""
 	if len(sys.argv) > 1:
 		if sys.argv[1] == "--help" or sys.argv[1] == "-h":
 			print(helptext)
+			exit()
+		if sys.argv[1] == "help" or sys.argv[1] == "h":
+			print("""
+idur <command> <package>
+Use:
+    install or in          <package>                Install package
+      -r --recommends                               install also recommends
+                                                    packages
+      -s --suggests                                 install also suggests
+                                                    packages
+      -i --ignore                                   Ignore Conflicts,
+                                                    Architecture, everything.
+
+    remove or rm           <package>                Remove package
+      -n --no-check                                 no check if other packages
+                                                    depends on the package
+                                                    that you want remove
+
+    show or sh             <package>                Show details of package
+
+    show-install or showin <package>                Show install instructions of package
+
+    show-remove or showrm  <package>                Show remove instructions of package
+
+    is-installed or ii     <package>                Show True if the package is
+                                                    installed
+
+    search or se           <name>                   Search packages
+
+    list or l                                       list all installed packages
+
+    list-all or la                                  list all packages
+
+    reinstall or rein      <package>                Reinstall package
+      -i --ignore                                   Ignore Conflicts,
+                                                    Architecture, everything.
+
+    update or up           <package>                Update package
+
+    update or up                                    Update all package
+
+    update-repos or upr                             Update just repos
+
+    add-repo or addr       <repo-name> <repo-link>  Add a new repo
+
+    remove-repo or rmr     <repo name>              Remove a repo
+
+    list-repos or lr                                list all repo
+
+    help or h                                       see expert help
+
+	
+    --help or -h                                    see basic help
+
+    --version or -v                                 see version
+	
+	""")
 			exit()
 		if sys.argv[1] == "--version" or sys.argv[1] == "-v":
 			print("v0.1.7")
@@ -199,12 +262,12 @@ def create_initial_folders():
 			print("You need root")
 
 # Function that remove the package, and then install the package again
-def reinstall_packages(packagename):
+def reinstall_packages(packagename, ignore=False):
 	remove_package(packagename, check=False)
-	install_package(packagename)
+	install_package(packagename, ignore=ignore)
 	
 # install package
-def install_package(packagename, sug=False, rec=False):
+def install_package(packagename, sug=False, rec=False, ignore=False):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
 	if len(result) == 0:
@@ -221,22 +284,28 @@ def install_package(packagename, sug=False, rec=False):
 		if package.Arch == "all" or package.Arch == "x86_64" or package.Arch == "both":
 			pass
 		elif package.Arch == "i386":
-			exit()
+			print("Just x86_64")
+			if ignore == False:
+				exit()
 	else:
 		if package.Arch == "all" or package.Arch == "i386" or package.Arch == "both":
 			pass
 		elif package.Arch == "x86_64":
-			exit()
+			print("Just i386")
+			if ignore == False:
+				exit()
 
 	if hasattr(package, 'Conflict'):
 		for i in range(len(package.Conflict)):
 			if package.Conflict[i] in str(subprocess.check_output(["apt", "list", "--installed", package.Conflict[i]])):
 				print(package.Conflict[i] + " is in conflict with " + packagename)
-				exit()
+				if ignore == False:
+					exit()
 			elif os.path.exists("/usr/bin/idur"):
 				if package_is_installed(package.Conflict[i]):
 					print(package.Conflict[i] + " is in conflict with " + packagename)
-					exit()
+					if ignore == False:
+						exit()
 	
 	os.system("cp " + path + " /etc/idur/apps/" + packagename + "-v.py")
 	
@@ -314,6 +383,8 @@ def install_package(packagename, sug=False, rec=False):
 			os.system(package.Install64)
 		elif package.Arch == "i386":
 			print("just i386")
+			if ignore:
+				os.system(package.Install32)
 		elif package.Arch == "both":
 			os.system(package.Install64)
 	else:
@@ -321,6 +392,8 @@ def install_package(packagename, sug=False, rec=False):
 			os.system(package.Install)
 		elif package.Arch == "x86_64":
 			print("just x86_64")
+			if ignore:
+				os.system(package.Install64)
 		elif package.Arch == "i386":
 			os.system(package.Install32)
 		elif package.Arch == "both":
