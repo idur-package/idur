@@ -512,6 +512,8 @@ def show_package_details(packagename):
 	if hasattr(package, 'Version'):
 		print("Version: " + str(package.Version))
 	print("Maintainer: " + package.Maintainer)
+	if hasattr(package, 'Time'):
+		print("Time (Install duration): " + package.Time)
 	if hasattr(package, 'Contact'):
 		print("Contact: " + package.Contact)
 	if hasattr(package, 'License'):
