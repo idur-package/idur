@@ -503,6 +503,27 @@ def show_install_instructions(packagename):
 			if hasattr(package, 'Install32'):
 				print(str(package.Install32))
 	
+def show_package_time_install(packagename):
+	path='/etc/idur/repos/*/' + packagename + '.py'
+	result=glob.glob(path, recursive=True)
+	if len(result) == 0:
+		print("Package not found")
+		exit()
+	
+	print("Repo: " + result[0][16:len(result[0])][:-1*(len(packagename)+4)])
+	
+	sys.path.insert(1, os.path.dirname(result[0]))
+	
+	package = __import__(packagename)
+	if packagename == "standard":
+		exit()
+	
+	if hasattr(package, 'Time'):
+		return "(" + str(package.Time) + ")"
+	else:
+		return ""
+	
+
 # Function that print the principal features of the package, like Name, Version, Description, Architecture, etc.
 def show_package_details(packagename):
 	path='/etc/idur/repos/*/' + packagename + '.py'
@@ -605,6 +626,29 @@ def package_is_installed(packagename):
 	else:
 		return False
 
+def to_update(packagename):
+	path='/etc/idur/repos/*/' + packagename + '.py'
+	result=glob.glob(path, recursive=True)
+	if len(result) == 0:
+		print("Package not found")
+		exit()
+	sys.path.insert(1, "/etc/idur/apps")
+
+	package = __import__(packagename + "-v")
+	if packagename == "standard":
+		exit()
+
+	if os.path.exists("/etc/idur/apps/" + packagename + "-v.py"):
+		sys.path.insert(2, os.path.dirname(result[0]))
+		newpackage = __import__(packagename)
+		if packagename == "standard":
+			exit()
+		if package.Version < newpackage.Version:
+			return True
+	else:
+		print("you don't have installed " + packagename)
+	return False
+
 # Function to update the package specified
 # idur update <name>
 def update_package(packagename, ignore=False, ignoreignore=False):
@@ -640,8 +684,24 @@ def update_all(ignore=False):
 	path='/etc/idur/apps/*-v.py'
 	result=glob.glob(path, recursive=True)
 
+	is_updates = False
+
 	if ignore:
 		warning_ignore()
+
+
+	for i in range(len(result)):
+		name=os.path.basename(result[i])
+		size = len(name)
+		name = name[:size - 5]
+		if to_update(name):
+			is_updates = True
+			print("- " + str(name) + " " + show_package_time_install(name))
+	if is_updates:
+		if print_continue() == False:
+			exit()
+	else:
+		print("No updates")
 
 	for i in range(len(result)):
 		name=os.path.basename(result[i])
@@ -794,7 +854,13 @@ def list_all():
 		result_out = result_out[:len(result_out) - 3]
 		if result_out != "standard" and result_out != "__pycach":
 			print(result_out)
-
+def print_continue():
+	while True:
+		ask = input("Continue? (Y/n)")
+		if ask.lower() == "y":
+			return True
+		elif ask.lower() == "n":
+			return False
 # alphabetical order
 def order_array(output):
 	output_amount = len(output)
