@@ -215,8 +215,14 @@ Use:
                                                     Architecture, everything.
 
     update or up           <package>                Update package
+      -i --ignore                                   Ignore Conflicts,
+                                                    Architecture, everything.
 
     update or up                                    Update all package
+      -i --ignore                                   Ignore Conflicts,
+                                                    Architecture, everything.
+                                                    (sudo idur -i update)
+
 
     update-repos or upr                             Update just repos
 
