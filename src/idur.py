@@ -112,6 +112,9 @@ def main():
 					if sys.argv[i-1] == "-i" or sys.argv[i-1] == "--ignore":
 						if arg_amount < 4:
 							update_all(ignore=True)
+					elif sys.argv[i-1] == "-y" or sys.argv[i-1] == "--yes":
+						if arg_amount < 4:
+							update_all(yes=True)
 					else:
 						for y in range(arg_amount):
 							if y > i:
