@@ -275,12 +275,16 @@ def create_initial_folders():
 			print("You need root")
 
 # Function that remove the package, and then install the package again
-def reinstall_packages(packagename, ignore=False):
+def reinstall_packages(packagename, ignore=False, yes=False):
 	if ignore:
 		warning_ignore()
 		
-	remove_package(packagename, check=False, ignore_check=True)
-	install_package(packagename, ignore=ignore, ignoreignore=True)
+	if yes==False:
+		if print_continue() == False:
+			exit()
+
+	remove_package(packagename, check=False, ignore_check=True, yes=True)
+	install_package(packagename, ignore=ignore, ignoreignore=True, yes=True)
 
 def warning_ignore():
 	print("\n\n\nWarning!!\n\n\n")
@@ -742,11 +746,17 @@ def list_installed():
 	
 # Function that remove the repository specified
 # idur remove-repo <name>
-def remove_repo(name):
+def remove_repo(name, yes=False):
+	
 	path='/etc/idur/repos/' + name + '/standard.py'
 	if os.path.exists(path):
 		size=len(path)
 		path = path[:size - 11]
+
+		if yes==False:
+			if print_continue() == False:
+				exit()
+
 		os.system("rm -vrf " + path)
 	else:
 		print("you don't have this repository")
@@ -766,7 +776,10 @@ def list_repos():
 
 # Function that clone the git repo, and it save in /etc/idur/repos/
 # idur add-repo <name> <link>
-def add_repo(name, link):
+def add_repo(name, link, yes=False):
+	if yes==False:
+		if print_continue() == False:
+			exit()
 	if os.path.exists("/etc/idur/repos/" + name) == False:
 		os.system("""
 		cd /etc/idur/repos/
