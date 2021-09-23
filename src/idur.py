@@ -102,12 +102,13 @@ def main():
 				if arg_amount < 3:
 					update_all()
 				else:
-					if sys.argv[i-1] == "-i" and arg_amount < 4:
-						update_all(ignore=True)
+					if sys.argv[i-1] == "-i" or sys.argv[i-1] == "--ignore":
+						if arg_amount < 4:
+							update_all(ignore=True)
 					else:
 						for y in range(arg_amount):
 							if y > i:
-								if sys.argv[y] == "-i":
+								if sys.argv[y] == "-i" or sys.argv[y] == "--ignore":
 									ignore = True
 								elif "--" not in sys.argv[y]:
 									check_internet()
