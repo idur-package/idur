@@ -290,13 +290,21 @@ def check_root():
 
 # Create the /etc/idur/
 def create_initial_folders():
-	if os.path.exists("/etc/idur/") == False:
-		if root():
+	if root():
+		if os.path.exists("/etc/idur/") == False:
 			os.system("mkdir -p /etc/idur/")
-			os.system("mkdir -p /etc/idur/repos")
-			os.system("mkdir -p /etc/idur/apps")
-		else:
-			print("You need root")
+		if os.path.exists("/etc/idur/repos/") == False:
+			os.system("mkdir -p /etc/idur/repos/")
+		if os.path.exists("/etc/idur/apps/") == False:
+			os.system("mkdir -p /etc/idur/apps/")
+		if os.path.exists("/opt/idur/") == False:
+			os.system("mkdir -p /opt/idur/")
+		if os.path.exists("/opt/idur/bin/") == False:
+			os.system("mkdir -p /opt/idur/bin/")
+		if os.path.exists("/opt/idur/bin/readme.txt") == False:
+			os.system('echo "exec iexec program to execute /opt/idur/bin/program" > /opt/idur/bin/readme.txt')
+	else:
+		print("You need root")
 
 # Function that remove the package, and then install the package again
 def reinstall_packages(packagename, ignore=False, yes=False):
