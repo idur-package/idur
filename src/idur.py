@@ -31,9 +31,11 @@ def main():
 							suggests=True
 						elif sys.argv[y] == "-i" or sys.argv[y] == "--ignore":
 							ignore=True
+						elif sys.argv[y] == "-y" or sys.argv[y] == "--yes":
+							always_yes=True
 						elif "--" not in sys.argv[y]:
 							check_internet()
-							install_package(sys.argv[y], rec=recommends, sug=suggests, ignore=ignore)
+							install_package(sys.argv[y], rec=recommends, sug=suggests, ignore=ignore, yes=always_yes)
 					else:
 						y = i
 			if sys.argv[i] == "show-install" or sys.argv[i] == "showin":
@@ -59,9 +61,11 @@ def main():
 					if y > i:
 						if sys.argv[y] == "-i" or sys.argv[y] == "--ignore":
 							ignore=True
+						elif sys.argv[y] == "-y" or sys.argv[y] == "--yes":
+							always_yes=True
 						elif "--" not in sys.argv[y]:
 							check_internet()
-							reinstall_packages(sys.argv[y], ignore=ignore)
+							reinstall_packages(sys.argv[y], ignore=ignore, yes=always_yes)
 					else:
 						y = i
 						
@@ -89,8 +93,10 @@ def main():
 					if y > i:
 						if sys.argv[y] == "-i" or sys.argv[y] == "--ignore":
 							check=False
+						elif sys.argv[y] == "-y" or sys.argv[y] == "--yes":
+							always_yes=True
 						elif "--" not in sys.argv[y]:
-							remove_package(sys.argv[y],check=check)
+							remove_package(sys.argv[y],check=check, yes=always_yes)
 					else:
 						y = i
 			elif sys.argv[i] == "is-installed" or sys.argv[i] == "ii":
@@ -111,9 +117,11 @@ def main():
 							if y > i:
 								if sys.argv[y] == "-i" or sys.argv[y] == "--ignore":
 									ignore = True
+								elif sys.argv[y] == "-y" or sys.argv[y] == "--yes":
+									always_yes=True
 								elif "--" not in sys.argv[y]:
 									check_internet()
-									update_package(sys.argv[y], ignore=ignore)
+									update_package(sys.argv[y], ignore=ignore, yes=always_yes)
 							else:
 								y = i
 
@@ -126,15 +134,19 @@ def main():
 				check_root()
 				check_internet()
 				if len(sys.argv) > i+2:
-					add_repo(sys.argv[i+1], sys.argv[i+2])
+					if sys.argv[i-1] == "-y" or sys.argv[i-1] == "--yes":
+						always_yes=True
+					add_repo(sys.argv[i+1], sys.argv[i+2],yes=always_yes)
 				else:
 					print("add-repo <repo-name> <repo-link>")
 			elif sys.argv[i] == "remove-repo" or sys.argv[i] == "rmr":
 				check_root()
 				for y in range(arg_amount):
 					if y > i:
-						if "--" not in sys.argv[y]:
-							remove_repo(sys.argv[y])
+						if sys.argv[y] == "-y" or sys.argv[y] == "--yes":
+							always_yes=True
+						elif "--" not in sys.argv[y]:
+							remove_repo(sys.argv[y], yes=always_yes)
 					else:
 						y = i
 			elif sys.argv[i] == "list-repos" or sys.argv[i] == "lr":
