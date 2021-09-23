@@ -102,13 +102,18 @@ def main():
 				if arg_amount < 3:
 					update_all()
 				else:
-					for y in range(arg_amount):
-						if y > i:
-							if "--" not in sys.argv[y]:
-								check_internet()
-								update_package(sys.argv[y])
-						else:
-							y = i
+					if sys.argv[i-1] == "-i" and arg_amount < 4:
+						update_all(ignore=True)
+					else:
+						for y in range(arg_amount):
+							if y > i:
+								if sys.argv[y] == "-i":
+									ignore = True
+								elif "--" not in sys.argv[y]:
+									check_internet()
+									update_package(sys.argv[y], ignore=ignore)
+							else:
+								y = i
 
 			elif sys.argv[i] == "update-repos" or sys.argv[i] == "upr":
 				check_root()
@@ -595,13 +600,18 @@ def package_is_installed(packagename):
 
 # Function to update the package specified
 # idur update <name>
-def update_package(packagename):
+def update_package(packagename, ignore=False, ignoreignore=False):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
 	if len(result) == 0:
 		print("Package not found")
 		exit()
 	sys.path.insert(1, "/etc/idur/apps")
+
+	if ignore and ignoreignore==False:
+		warning_ignore()
+		
+
 	
 	package = __import__(packagename + "-v")
 	if packagename == "standard":
@@ -613,21 +623,27 @@ def update_package(packagename):
 		if packagename == "standard":
 			exit()
 		if package.Version < newpackage.Version:
-			print("update")
 			remove_package(packagename, check=False, ignore_check=True)
-			install_package(packagename)
+			install_package(packagename, ignore=ignore, ignoreignore=True)
 	else:
 		print("you don't have installed " + packagename)
 	
 # Function that update all the packages (if it need update) and repositories that you have
-def update_all():
+def update_all(ignore=False):
 	path='/etc/idur/apps/*-v.py'
 	result=glob.glob(path, recursive=True)
+
+	if ignore:
+		warning_ignore()
+
 	for i in range(len(result)):
 		name=os.path.basename(result[i])
 		size = len(name)
 		name = name[:size - 5]
-		update_package(name)
+		if ignore:
+			update_package(name, ignore=ignore, ignoreignore=True)
+		else:
+			update_package(name)
 
 # Function that list all the packages that you have installed
 # the installed apps are saved in /etc/idur/apps/, with -v.py
