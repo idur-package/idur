@@ -663,7 +663,7 @@ def to_update(packagename):
 
 # Function to update the package specified
 # idur update <name>
-def update_package(packagename, ignore=False, ignoreignore=False):
+def update_package(packagename, ignore=False, ignoreignore=False, yes=False):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
 	if len(result) == 0:
@@ -686,8 +686,11 @@ def update_package(packagename, ignore=False, ignoreignore=False):
 		if packagename == "standard":
 			exit()
 		if package.Version < newpackage.Version:
-			remove_package(packagename, check=False, ignore_check=True)
-			install_package(packagename, ignore=ignore, ignoreignore=True)
+			if yes==False:
+				if print_continue() == False:
+					exit()
+			remove_package(packagename, check=False, ignore_check=True, yes=True)
+			install_package(packagename, ignore=ignore, ignoreignore=True, yes=True)
 	else:
 		print("you don't have installed " + packagename)
 	
@@ -721,9 +724,9 @@ def update_all(ignore=False, yes=False):
 		size = len(name)
 		name = name[:size - 5]
 		if ignore:
-			update_package(name, ignore=ignore, ignoreignore=True)
+			update_package(name, ignore=ignore, ignoreignore=True, yes=True)
 		else:
-			update_package(name)
+			update_package(name, yes=True)
 
 # Function that list all the packages that you have installed
 # the installed apps are saved in /etc/idur/apps/, with -v.py
