@@ -17,6 +17,7 @@ def main():
 	suggests=False
 	ignore=False
 	check=True
+	always_yes=False
 	
 	if arg_amount > 1:
 		for i in range(arg_amount):
@@ -292,7 +293,7 @@ def warning_ignore():
 		exit()
 
 # install package
-def install_package(packagename, sug=False, rec=False, ignore=False, ignoreignore=False):
+def install_package(packagename, sug=False, rec=False, ignore=False, ignoreignore=False, yes=False):
 
 	if ignore and ignoreignore==False:
 
@@ -345,6 +346,10 @@ def install_package(packagename, sug=False, rec=False, ignore=False, ignoreignor
 					if ignore == False:
 						exit()
 	
+	if yes==False:
+		if print_continue() == False:
+			exit()
+
 	os.system("cp " + path + " /etc/idur/apps/" + packagename + "-v.py")
 	
 	if hasattr(package, 'Depends'):
@@ -424,6 +429,8 @@ def install_package(packagename, sug=False, rec=False, ignore=False, ignoreignor
 						if to_install:
 							os.system("idur install " + package.idurDepends[i])
 	
+
+
 	if Arch64():
 		if package.Arch == "all":
 			os.system(package.Install)
@@ -598,7 +605,7 @@ def is_idurDepends_of_installed_packages(idurDepend):
 
 # Function that execute the remove instructions and remove the package from /etc/idur/apps/
 # idur remove <name>
-def remove_package(packagename, check=True, ignore_check=False):
+def remove_package(packagename, check=True, ignore_check=False, yes=False):
 	sys.path.insert(1, "/etc/idur/apps")
 	
 	if os.path.exists("/etc/idur/apps/" + packagename + "-v.py") == False:
@@ -615,6 +622,11 @@ def remove_package(packagename, check=True, ignore_check=False):
 	package = __import__(packagename + "-v")
 	if packagename == "standard":
 		exit()
+
+	if yes==False:
+		if print_continue() == False:
+			exit()
+
 	os.system("bash -c \"" + package.Remove + "\"")
 	os.system("rm -vrf /etc/idur/apps/" + packagename + "-v.py")
 
@@ -680,7 +692,7 @@ def update_package(packagename, ignore=False, ignoreignore=False):
 		print("you don't have installed " + packagename)
 	
 # Function that update all the packages (if it need update) and repositories that you have
-def update_all(ignore=False):
+def update_all(ignore=False, yes=False):
 	path='/etc/idur/apps/*-v.py'
 	result=glob.glob(path, recursive=True)
 
@@ -698,8 +710,9 @@ def update_all(ignore=False):
 			is_updates = True
 			print("- " + str(name) + " " + show_package_time_install(name))
 	if is_updates:
-		if print_continue() == False:
-			exit()
+		if yes==False:
+			if print_continue() == False:
+				exit()
 	else:
 		print("No updates")
 
