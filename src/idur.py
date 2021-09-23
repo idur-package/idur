@@ -302,7 +302,7 @@ def create_initial_folders():
 		if os.path.exists("/opt/idur/bin/") == False:
 			os.system("mkdir -p /opt/idur/bin/")
 		if os.path.exists("/opt/idur/bin/readme.txt") == False:
-			os.system('echo "exec iexec program to execute /opt/idur/bin/program" > /opt/idur/bin/readme.txt')
+			os.system('echo "exec idur-exec program to execute /opt/idur/bin/program" > /opt/idur/bin/readme.txt')
 	else:
 		print("You need root")
 
