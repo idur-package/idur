@@ -205,11 +205,13 @@ Use:
                                                     packages
       -i --ignore                                   Ignore Conflicts,
                                                     Architecture, everything.
+      -y --yes                                      no ask to continue
 
     remove or rm           <package>                Remove package
       -i --ignore                                   no check if other packages
                                                     depends on the package
                                                     that you want remove
+      -y --yes                                      no ask to continue
 
     show or sh             <package>                Show details of package
 
@@ -229,22 +231,29 @@ Use:
     reinstall or rein      <package>                Reinstall package
       -i --ignore                                   Ignore Conflicts,
                                                     Architecture, everything.
+      -y --yes                                      no ask to continue
 
     update or up           <package>                Update package
       -i --ignore                                   Ignore Conflicts,
                                                     Architecture, everything.
+      -y --yes                                      no ask to continue
 
     update or up                                    Update all package
       -i --ignore                                   Ignore Conflicts,
                                                     Architecture, everything.
                                                     (sudo idur -i update)
+      -y --yes                                      no ask to continue
+                                                    (sudo idur -y update)
 
 
     update-repos or upr                             Update just repos
 
     add-repo or addr       <repo-name> <repo-link>  Add a new repo
+      -y --yes                                      no ask to continue
+                        (sudo idur -y add-repo <repo-name> <repo-link>)
 
     remove-repo or rmr     <repo name>              Remove a repo
+      -y --yes                                      no ask to continue
 
     list-repos or lr                                list all repo
 
