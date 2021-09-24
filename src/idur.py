@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 import os
 import sys
-from sys import exit, path
+from sys import exit
 import glob
 import subprocess
 import requests
+import importlib
 
 # Main Function
 def main():
@@ -343,18 +344,9 @@ def install_package(packagename, sug=False, rec=False, ignore=False, ignoreignor
 			print("Aborting")
 			exit()
 
-	path='/etc/idur/repos/*/' + packagename + '.py'
-	result=glob.glob(path, recursive=True)
-	if len(result) == 0:
-		print("Package not found")
-		exit()
-	result=order_array(result)
-	sys.path.insert(1, os.path.dirname(result[0]))
-	
-	package = __import__(packagename)
-	if packagename == "standard":
-		exit()
-	
+	package = load_package_from_repos(packagename)
+	path = load_package_from_repos(packagename, returnpath=True)
+
 	if Arch64():
 		if package.Arch == "all" or package.Arch == "x86_64" or package.Arch == "both":
 			pass
@@ -492,17 +484,7 @@ def install_package(packagename, sug=False, rec=False, ignore=False, ignoreignor
 
 # Print the remove instructions
 def show_remove_instructions(packagename):
-	path='/etc/idur/repos/*/' + packagename + '.py'
-	result=glob.glob(path, recursive=True)
-	if len(result) == 0:
-		print("Package not found")
-		exit()
-	sys.path.insert(1, os.path.dirname(result[0]))
-	
-	package = __import__(packagename)
-	if packagename == "standard":
-		exit()
-	
+	package = load_package_from_repos(packagename)
 	if hasattr(package, 'Remove'):
 		print(str(package.Remove))
 	else:
@@ -510,17 +492,9 @@ def show_remove_instructions(packagename):
 		
 # Print the install instructions
 def show_install_instructions(packagename):
-	path='/etc/idur/repos/*/' + packagename + '.py'
-	result=glob.glob(path, recursive=True)
-	if len(result) == 0:
-		print("Package not found")
-		exit()
-	sys.path.insert(1, os.path.dirname(result[0]))
 	
-	package = __import__(packagename)
-	if packagename == "standard":
-		exit()
-		
+	package = load_package_from_repos(packagename)
+
 	if Arch64():
 		if package.Arch == "all":
 			if hasattr(package, 'Install'):
@@ -547,19 +521,10 @@ def show_install_instructions(packagename):
 				print(str(package.Install32))
 	
 def show_package_time_install(packagename):
-	path='/etc/idur/repos/*/' + packagename + '.py'
-	result=glob.glob(path, recursive=True)
-	if len(result) == 0:
-		print("Package not found")
-		exit()
-	
-	print("Repo: " + result[0][16:len(result[0])][:-1*(len(packagename)+4)])
-	
-	sys.path.insert(1, os.path.dirname(result[0]))
-	
-	package = __import__(packagename)
-	if packagename == "standard":
-		exit()
+	package = load_package_from_repos(packagename)
+	path = load_package_from_repos(packagename, returnpath=True)
+
+	print("Repo: " + path[16:len(path)][:-1*(len(packagename)+4)])
 	
 	if hasattr(package, 'Time'):
 		return "(" + str(package.Time) + ")"
@@ -569,20 +534,11 @@ def show_package_time_install(packagename):
 
 # Function that print the principal features of the package, like Name, Version, Description, Architecture, etc.
 def show_package_details(packagename):
-	path='/etc/idur/repos/*/' + packagename + '.py'
-	result=glob.glob(path, recursive=True)
-	if len(result) == 0:
-		print("Package not found")
-		exit()
+	package = load_package_from_repos(packagename)
+	path = load_package_from_repos(packagename, returnpath=True)
 	
-	print("Repo: " + result[0][16:len(result[0])][:-1*(len(packagename)+4)])
+	print("Repo: " + path[16:len(path)][:-1*(len(packagename)+4)])
 	
-	sys.path.insert(1, os.path.dirname(result[0]))
-	
-	
-	package = __import__(packagename)
-	if packagename == "standard":
-		exit()
 	
 	print("Name: " + package.Name)
 	if hasattr(package, 'Version'):
@@ -642,11 +598,8 @@ def is_idurDepends_of_installed_packages(idurDepend):
 # Function that execute the remove instructions and remove the package from /etc/idur/apps/
 # idur remove <name>
 def remove_package(packagename, check=True, ignore_check=False, yes=False):
-	sys.path.insert(1, "/etc/idur/apps")
-	
-	if os.path.exists("/etc/idur/apps/" + packagename + "-v.py") == False:
-		print("you don't have installed " + packagename)
-		exit()
+
+	package = load_package_installed(packagename)
 	
 	if check:
 		if is_idurDepends_of_installed_packages(packagename):
@@ -655,9 +608,7 @@ def remove_package(packagename, check=True, ignore_check=False, yes=False):
 		if ignore_check==False:
 			warning_ignore()
 
-	package = __import__(packagename + "-v")
-	if packagename == "standard":
-		exit()
+	
 
 	if yes==False:
 		if print_continue() == False:
@@ -675,22 +626,11 @@ def package_is_installed(packagename):
 		return False
 
 def to_update(packagename):
-	path='/etc/idur/repos/*/' + packagename + '.py'
-	result=glob.glob(path, recursive=True)
-	if len(result) == 0:
-		print("Package not found")
-		exit()
-	sys.path.insert(1, "/etc/idur/apps")
 
-	package = __import__(packagename + "-v")
-	if packagename == "standard":
-		exit()
+	package = load_package_installed(packagename)
 
 	if os.path.exists("/etc/idur/apps/" + packagename + "-v.py"):
-		sys.path.insert(2, os.path.dirname(result[0]))
-		newpackage = __import__(packagename)
-		if packagename == "standard":
-			exit()
+		newpackage = load_package_from_repos(packagename)
 		if package.Version < newpackage.Version:
 			return True
 	else:
@@ -938,6 +878,62 @@ def order_array(output):
 					with_problem = True
 	
 	return output
+def load_package_from_path(pathvar):
+	result=glob.glob(pathvar, recursive=True)
+	if len(result) == 0:
+		print("Package not found")
+		exit()
+	packagename = os.path.basename(pathvar)
+	packagename = packagename[:-3]
+	if packagename == "standard":
+		exit()
+	spec=importlib.util.spec_from_file_location(packagename,pathvar)
+	package = importlib.util.module_from_spec(spec)
+	spec.loader.exec_module(package)
+	return package
+
+def load_package_installed(packagename):
+	path="/etc/idur/apps/" + packagename + "-v.py"
+	result=glob.glob(path, recursive=True)
+	if len(result) == 0:
+		print("Package not installed")
+		exit()
+	package = load_package_from_path(result[0])
+	return package
+	
+def load_package_from_repos(packagename, returnpath=False, returnrepo=False):
+	path='/etc/idur/repos/*/' + packagename + '.py'
+	result=glob.glob(path, recursive=True)
+	if len(result) == 0:
+		print("Package not found")
+		exit()
+	result=order_array(result)
+	package = []
+	#package = load_package_from_path(result[0])
+	for i in range(len(result)):
+		package.append(load_package_from_path(result[i]))
+	
+	with_problem = True
+	while with_problem:
+		with_problem = False
+		for i in range(len(result)):
+			if i != 0:
+				if package[i].Version > package[i-1].Version:
+					number_temp = package[i-1]
+					package[i-1] = package[i]
+					package[i] = number_temp
+
+					result_temp = result[i-1]
+					result[i-1] = result[i]
+					result[i] = result_temp
+					with_problem = True
+
+	if returnpath:
+		return result[0]
+	if returnrepo:
+		return os.path.dirname(result[0])
+
+	return package[0]
 
 if __name__ == "__main__":
 	main()
