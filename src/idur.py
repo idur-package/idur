@@ -577,8 +577,8 @@ def is_idurDepends_of_installed_packages(idurDepend):
 		sys.path.insert(1, "/etc/idur/apps")
 		name=os.path.basename(result[i])
 		size = len(name)
-		name = name[:size - 3]
-		package = __import__(name)
+		name = name[:size - 5]
+		package = load_package_installed(name)
 		if hasattr(package, 'idurDepends'):
 			for j in range (len(package.idurDepends)):
 				if package.idurDepends[j] == idurDepend:
