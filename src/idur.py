@@ -305,7 +305,8 @@ def create_initial_folders():
 		if os.path.exists("/opt/idur/bin/readme.txt") == False:
 			os.system('echo "exec idur-exec program to execute /opt/idur/bin/program" > /opt/idur/bin/readme.txt')
 	else:
-		print("You need root")
+		if os.path.exists("/etc/idur/") == False or os.path.exists("/opt/idur/") == False:
+			print("You need root")
 
 # Function that remove the package, and then install the package again
 def reinstall_packages(packagename, ignore=False, yes=False):
