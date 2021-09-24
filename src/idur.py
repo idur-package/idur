@@ -640,27 +640,13 @@ def to_update(packagename):
 # Function to update the package specified
 # idur update <name>
 def update_package(packagename, ignore=False, ignoreignore=False, yes=False):
-	path='/etc/idur/repos/*/' + packagename + '.py'
-	result=glob.glob(path, recursive=True)
-	if len(result) == 0:
-		print("Package not found")
-		exit()
-	sys.path.insert(1, "/etc/idur/apps")
+	package = load_package_installed(packagename)
 
 	if ignore and ignoreignore==False:
 		warning_ignore()
-		
-
-	
-	package = __import__(packagename + "-v")
-	if packagename == "standard":
-		exit()
 	
 	if os.path.exists("/etc/idur/apps/" + packagename + "-v.py"):
-		sys.path.insert(2, os.path.dirname(result[0]))
-		newpackage = __import__(packagename)
-		if packagename == "standard":
-			exit()
+		newpackage = load_package_from_repos(packagename)
 		if package.Version < newpackage.Version:
 			if yes==False:
 				if print_continue() == False:
@@ -768,10 +754,7 @@ def update_repos():
 
 # Print the Description of the path_input
 def print_description_of_path(path_input):
-	sys.path.insert(1, os.path.dirname(path_input))
-	packagename = os.path.basename(path_input)
-	packagename = packagename[:len(packagename) - 3]
-	package = __import__(packagename)
+	package = load_package_from_path(path_input)
 	
 	description = package.Description.replace('\n', ' ')
 	
@@ -779,11 +762,10 @@ def print_description_of_path(path_input):
 
 # Return True if the searchword is in the Description of path_input
 def search_on_description(path_input, searchword):
-	sys.path.insert(1, os.path.dirname(path_input))
 	packagename = os.path.basename(path_input)
 	packagename = packagename[:len(packagename) - 3]
 	if packagename != "__pycach" and packagename != "standard":
-		package = __import__(packagename)
+		package = load_package_from_repos(packagename)
 	
 		if searchword.lower() in package.Description.lower():
 			return True
