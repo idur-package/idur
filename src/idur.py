@@ -313,7 +313,9 @@ def reinstall_packages(packagename, ignore=False, yes=False):
 	if ignore:
 		warning_ignore()
 		
+
 	if yes==False:
+		print(packagename + " " + show_package_time_install(packagename))
 		if print_continue() == False:
 			exit()
 
@@ -376,6 +378,7 @@ def install_package(packagename, sug=False, rec=False, ignore=False, ignoreignor
 						exit()
 	
 	if yes==False:
+		print(package.Name + " " + show_package_time_install(packagename))
 		if print_continue() == False:
 			exit()
 
@@ -525,7 +528,7 @@ def show_package_time_install(packagename):
 	package = load_package_from_repos(packagename)
 	path = load_package_from_repos(packagename, returnpath=True)
 
-	print("Repo: " + path[16:len(path)][:-1*(len(packagename)+4)])
+	#print("Repo: " + path[16:len(path)][:-1*(len(packagename)+4)])
 	
 	if hasattr(package, 'Time'):
 		return "(" + str(package.Time) + ")"
@@ -612,6 +615,7 @@ def remove_package(packagename, check=True, ignore_check=False, yes=False):
 	
 
 	if yes==False:
+		print("Remove " + package.Name)
 		if print_continue() == False:
 			exit()
 
