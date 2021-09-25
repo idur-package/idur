@@ -33,11 +33,11 @@ sudo idur install non-free-repo
 ```
 ## Create idurs
 #### (simple bash knows needed)
-so simple just use the create-idur. Install with
+so simple just use the Idur Dev Tools. Install with
 ```
-sudo idur install create-idur
+sudo idur install idt
 ```
-And execute it on terminal
+And execute create-idur on terminal
 this will create a file with the start of your idur
 and you have to modified the Description, Install and Remove sections.
 
