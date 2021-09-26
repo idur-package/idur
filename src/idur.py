@@ -314,7 +314,7 @@ def create_initial_folders():
 			os.system('echo "exec idur-exec program to execute /opt/idur/bin/program" > /opt/idur/bin/readme.txt')
 	else:
 		if os.path.exists("/etc/idur/") == False or os.path.exists("/opt/idur/") == False:
-			print("You need root")
+			print(COLOR.RED + "You need root" + COLOR.RESET)
 
 # Function that remove the package, and then install the package again
 def reinstall_packages(packagename, ignore=False, yes=False):
@@ -331,8 +331,8 @@ def reinstall_packages(packagename, ignore=False, yes=False):
 	install_package(packagename, ignore=ignore, ignoreignore=True, yes=True)
 
 def warning_ignore():
-	print("\n\n\nWarning!!\n\n\n")
-	print("-i or --ignore ignores all Depends, Conflicts and Architectures")
+	print(COLOR.RED + "\n\n\n" + COLOR.RED + "Warning!!\n\n\n")
+	print(COLOR.RED + "-i or --ignore ignores all Depends, Conflicts and Architectures" + COLOR.RESET)
 	ask=input("Are You Sure that you want to use the -i or --ignore parameter? (Y/n)")
 	if ask.lower() == "y":
 		print("Continue...")
@@ -647,7 +647,7 @@ def to_update(packagename):
 		if package.Version < newpackage.Version:
 			return True
 	else:
-		print("you don't have installed " + packagename)
+		print(COLOR.RED + "you don't have installed " + packagename + COLOR.RESET)
 	return False
 
 # Function to update the package specified
@@ -667,7 +667,7 @@ def update_package(packagename, ignore=False, ignoreignore=False, yes=False):
 			remove_package(packagename, check=False, ignore_check=True, yes=True)
 			install_package(packagename, ignore=ignore, ignoreignore=True, yes=True)
 	else:
-		print("you don't have installed " + packagename)
+		print(COLOR.RED + "you don't have installed " + packagename + COLOR.RESET)
 	
 # Function that update all the packages (if it need update) and repositories that you have
 def update_all(ignore=False, yes=False):
@@ -692,7 +692,7 @@ def update_all(ignore=False, yes=False):
 			if print_continue() == False:
 				exit()
 	else:
-		print("No updates")
+		print(COLOR.GREEN + "No updates" + COLOR.RESET)
 
 	for i in range(len(result)):
 		name=os.path.basename(result[i])
@@ -730,7 +730,7 @@ def remove_repo(name, yes=False):
 
 		os.system("rm -vrf " + path)
 	else:
-		print("you don't have this repository")
+		print(COLOR.RED + "you don't have this repository" + COLOR.RESET)
 	
 # Function that list all the repositories that you have cloned in /etc/idur/repos/
 def list_repos():
@@ -761,10 +761,11 @@ def add_repo(name, link, yes=False):
 #
 # idur update-repos
 def update_repos():
-	print(COLOR.GREEN)
 	result=glob.glob('/etc/idur/repos/*/standard.py', recursive=True)
 	for i in range(len(result)):
+		print(COLOR.GREEN)
 		os.system("cd " + os.path.dirname(result[i]) + " && git pull")
+		print(COLOR.GREEN)
 	print(COLOR.RESET)
 
 # Print the Description of the path_input
@@ -917,7 +918,6 @@ def load_package_from_repos(packagename, returnpath=False, returnrepo=False):
 		exit()
 	result=order_array(result)
 	package = []
-	#package = load_package_from_path(result[0])
 	for i in range(len(result)):
 		package.append(load_package_from_path(result[i]))
 	
