@@ -6,6 +6,7 @@ import glob
 import subprocess
 import requests
 import importlib
+from colorama import Fore as COLOR
 
 # Main Function
 def main():
@@ -286,7 +287,14 @@ def root():
 # Print if the user has root power
 def check_root():
 	if root() == False:
-		print("need root")
+		print(COLOR.RED + """You're not root, you need use idur with root or an admin user
+You can try:
+------------
+""" + COLOR.RESET + "sudo idur" + COLOR.RED + """
+------------
+""" + COLOR.RESET + """su root
+idur""" + COLOR.RED + """
+------------""" + COLOR.RESET)
 		exit()
 
 # Create the /etc/idur/
@@ -753,9 +761,11 @@ def add_repo(name, link, yes=False):
 #
 # idur update-repos
 def update_repos():
+	print(COLOR.GREEN)
 	result=glob.glob('/etc/idur/repos/*/standard.py', recursive=True)
 	for i in range(len(result)):
 		os.system("cd " + os.path.dirname(result[i]) + " && git pull")
+	print(COLOR.RESET)
 
 # Print the Description of the path_input
 def print_description_of_path(path_input):
@@ -791,7 +801,7 @@ def search_packages(packagename, search_all=False):
 	if search_all==False and packagename != "":
 
 		# Description Search
-		print("\nDescription Search\n")
+		print("\nDescription Search")
 		dpath="/etc/idur/repos/*/*"
 		dresult=glob.glob(dpath, recursive=True)
 		dresult=order_array(dresult)
@@ -800,16 +810,24 @@ def search_packages(packagename, search_all=False):
 			result_out = result_out[:len(result_out) - 3]
 			if result_out != "standard" or result_out != "__pycach":
 				if search_on_description(dresult[j], packagename):
-					print(result_out)
+					print()
+					if package_is_installed(result_out):
+						print(result_out + COLOR.GREEN + " (is installed)" + COLOR.RESET)
+					else:
+						print(result_out)
 					print_description_of_path(dresult[j])
 	
 	# Name Search
-	print("\nName Search\n")
+	print("\nName Search")
 	for i in range(len(result)):
 		result_out=os.path.basename(result[i])
 		result_out = result_out[:len(result_out) - 3]
 		if result_out != "standard":
-			print(result_out)
+			print()
+			if package_is_installed(result_out):
+				print(result_out + COLOR.GREEN + " (is installed)" + COLOR.RESET)
+			else:
+				print(result_out)
 			print_description_of_path(result[i])
 
 # Return True if there is internet
@@ -827,9 +845,9 @@ def internet():
 def check_internet():
 	result=internet()
 	if result:
-		print("Connected to the Internet")
+		print(COLOR.GREEN + "Connected to the Internet" + COLOR.RESET)
 	else:
-		print("No internet connection.")
+		print(COLOR.RED + "No internet connection." + COLOR.RESET)
 		exit()
 
 # list all available packages
@@ -841,7 +859,10 @@ def list_all():
 		result_out = os.path.basename(result[i])
 		result_out = result_out[:len(result_out) - 3]
 		if result_out != "standard" and result_out != "__pycach":
-			print(result_out)
+			if package_is_installed(result_out):
+				print(result_out + COLOR.GREEN + " (installed)" + COLOR.RESET)
+			else:
+				print(result_out)
 def print_continue():
 	while True:
 		ask = input("Continue? (Y/n)")
@@ -883,7 +904,7 @@ def load_package_installed(packagename):
 	path="/etc/idur/apps/" + packagename + "-v.py"
 	result=glob.glob(path, recursive=True)
 	if len(result) == 0:
-		print("Package not installed")
+		print(COLOR.RED + "Package not installed" + COLOR.RESET)
 		exit()
 	package = load_package_from_path(result[0])
 	return package
@@ -892,7 +913,7 @@ def load_package_from_repos(packagename, returnpath=False, returnrepo=False):
 	path='/etc/idur/repos/*/' + packagename + '.py'
 	result=glob.glob(path, recursive=True)
 	if len(result) == 0:
-		print("Package not found")
+		print(COLOR.RED + "Package not found" + COLOR.RESET)
 		exit()
 	result=order_array(result)
 	package = []
