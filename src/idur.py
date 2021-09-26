@@ -452,14 +452,14 @@ def install_package(packagename, sug=False, rec=False, ignore=False, ignoreignor
 								print(deps[j] + " is installed")
 								to_install=False
 						if to_install:
-							os.system("idur install " + deps[0])
+							os.system("idur install -y " + deps[0])
 					else:
 						to_install=True
 						if package_is_installed(package.idurDepends[i]):
 								print(package.idurDepends[i] + " is installed")
 								to_install=False
 						if to_install:
-							os.system("idur install " + package.idurDepends[i])
+							os.system("idur install -y " + package.idurDepends[i])
 	
 
 
