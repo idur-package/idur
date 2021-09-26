@@ -333,27 +333,15 @@ def reinstall_packages(packagename, ignore=False, yes=False):
 def warning_ignore():
 	print(COLOR.RED + "\n\n\n" + COLOR.RED + "Warning!!\n\n\n")
 	print(COLOR.RED + "-i or --ignore ignores all Depends, Conflicts and Architectures" + COLOR.RESET)
-	ask=input("Are You Sure that you want to use the -i or --ignore parameter? (Y/n)")
-	if ask.lower() == "y":
-		print("Continue...")
-	else:
-		print("Aborting")
+	print("Are You Sure that you want to use the -i or --ignore parameter?")
+	if print_continue() == False:
 		exit()
 
 # install package
 def install_package(packagename, sug=False, rec=False, ignore=False, ignoreignore=False, yes=False):
 
 	if ignore and ignoreignore==False:
-
-		print("\n\n\nWarning!!\n\n\n")
-
-		print("-i or --ignore ignores all Conflicts and Architectures")
-		ask=input("Are You Sure that you want to use the -i or --ignore parameter? (Y/n)")
-		if ask.lower() == "y":
-			print("Continue...")
-		else:
-			print("Aborting")
-			exit()
+		warning_ignore()
 
 	package = load_package_from_repos(packagename)
 	path = load_package_from_repos(packagename, returnpath=True)
