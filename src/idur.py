@@ -268,7 +268,7 @@ Use:
 	""")
 			exit()
 		if sys.argv[1] == "--version" or sys.argv[1] == "-v":
-			print("v0.2.2")
+			print("v0.2.3")
 			exit()
 	else:
 		print(helptext)
